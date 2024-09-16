@@ -1,150 +1,66 @@
-/* Estilos globales */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
 }
 
-/* Estilos para el Index */
 .container {
-    display: grid;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
+    background-color: #fff;
     width: 100%;
-    max-width: 500px;
-    background-color: hsl(0, 0%, 100%);
-    border-radius: 20px;
-    padding: 40px;
+    height: 100vh; 
+    max-width: none; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo {
+    background-color: #fff; 
+    padding: 20px;
+    border-bottom: 2px solid #ccc; 
 }
 
 .logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    margin-bottom: 20px;
+    width: 250px; 
+}
+
+.content {
+    background-color: #f0f0f0; 
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .buttons {
-    margin-bottom: 15px;
-}
-
-.buttons button {
-    background-color: #000000;
-    color: white;
-    padding: 10px;
-    border-radius: 30px;
-    border: none;
-    cursor: pointer;
-    margin-right: 10px;
-}
-
-
-
-.social-media a {
-    margin: 0 10px;
-    display: inline-block;
-    text-decoration: none;
-    color: black;
-    
-}
-
-.social-media img {
-    width: 25px;
-    height: 40px;
-   margin-left: 355%;
-}
-
-/* Estilos para la pantalla de Registro */
-.container-registro {
     display: flex;
     justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    margin-top: 20px;
-}
-
-.left-section img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.right-section {
-    background-color: #1a2c48;
-    color: white;
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 50%;
-}
-
-.right-section h2 {
-    text-align: center;
     margin-bottom: 20px;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    margin: 10px 0 5px;
-    font-size: 14px;
-}
-
-input {
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    margin-bottom: 10px;
-    font-size: 14px;
-}
-
-button.submit-button {
-    background-color: white;
-    color: #1a2c48;
-    padding: 10px;
-    border-radius: 30px;
-    border: none;
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: 2px solid #d9d9d9; /* Borde de los botones */
+    border-radius: 25px; /* Bordes redondeados */
     cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-    align-self: center;
-    width: 150px;
+    width: 150px; /* Ancho de los botones */
+    background-color: #000; /* Color de fondo negro */
+    color: white; /* Color de texto blanco */
 }
 
-button.submit-button:hover {
-    background-color: #f1f1f1;
+.social-icons {
+    display: flex;
+    justify-content: center;
 }
 
-@media (max-width: 768px) {
-    .container-registro {
-        flex-direction: column;
-    }
-
-    .right-section {
-        width: 100%;
-        padding: 20px;
-    }
-
-    .left-section img {
-        height: auto;
-        width: 100%;
-    }
+.social-icons img {
+    width: 40px;
+    margin: 0 10px;
+    cursor: pointer;
 }
