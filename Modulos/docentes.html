@@ -1,0 +1,113 @@
+<form id="frmDocente" data-accion="nuevo" data-iddocente="0"></form>
+    <div class="card text-bg-dark mb-3" style="min-width: 700px;">
+        <div class="card-header">
+            <div class="d-flex">
+                Registro de Docentes
+                <div class="ms-auto">
+                    <button type="button" data-form="docentes" class="btn-close btn-close-white" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row p-1">
+                <div class="col-3 col-md-2">CODIGO </div>
+                <div class="col-9 col-md-4">
+                    <input type="text" class="form-control" id="txtCodigoDocente" name="txtCodigoDocente" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">NOMBRE </div>
+                <div class="col-9 col-md-6">
+                    <input type="text" class="form-control" id="txtNombreDocente" name="txtNombreDocente" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">DIRECCION</div>
+                <div class="col-9 col-md-10">
+                    <input type="text" class="form-control" id="txtDireccionDocente" name="txtDireccionDocente" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">TELEFONO </div>
+                <div class="col-9 col-md-4">
+                    <input type="text" class="form-control" id="txtTelefonoDocente" name="txtTelefonoDocente" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">CORREO </div>
+                <div class="col-9 col-md-6">
+                    <input type="email" class="form-control" id="txtCorreoDocente" name="txtCorreoDocente" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">DUI </div>
+                <div class="col-9 col-md-4">
+                    <input type="text" class="form-control" id="txtDuiDocente" name="txtDuiDocente" placeholder="00000000-0" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-primary">Guardar</button>
+                </div>
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="reset" class="btn btn-outline-warning">Nuevo</button>
+                </div>
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="button" class="btn btn-outline-success" onclick="abrirVentana('busqueda_docentes')">BUSCAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    document.querySelector('#frmDocente').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        
+        let datos = {
+            accion : frmDocente.dataset.accion,
+            idDocente : frmDocente.dataset.iddocente,
+            codigo : txtCodigoDocente.value,
+            nombre : txtNombreDocente.value,
+            direccion : txtDireccionDocente.value,
+            telefono : txtTelefonoDocente.value,
+            correo : txtCorreoDocente.value,
+            dui : txtDuiDocente.value
+        };
+        enviarDatosDocente(datos);
+    });
+    
+    function enviarDatosDocente(datos){
+        fetch('/docentes',{
+                method : 'POST',
+                body : JSON.stringify(datos)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if( data.msg==='ok' ){
+                    consultarDocentes();
+                    limpiarDatosDocentes();
+                }
+            })
+            .catch(err => console.log(err));
+    }
+    function modificarDocente(docente){
+        frmDocente.dataset.accion = 'modificar';
+        frmDocente.dataset.iddocente = docente.idDocente;
+        txtCodigoDocente.value = docente.codigo;
+        txtNombreDocente.value = docente.nombre;
+        txtDireccionDocente.value = docente.direccion;
+        txtTelefonoDocente.value = docente.telefono;
+        txtCorreoDocente.value = docente.email;
+        txtDuiDocente.value = docente.dui;
+    }
+    function limpiarDatosDocentes(){
+        frmDocente.dataset.accion = 'nuevo';
+        frmDocente.dataset.iddocente = '';
+        txtCodigoDocente.value = '';
+        txtNombreDocente.value = '';
+        txtDireccionDocente.value = '';
+        txtTelefonoDocente.value = '';
+        txtCorreoDocente.value = '';
+        txtDuiDocente.value = '';
+    }
+</script>

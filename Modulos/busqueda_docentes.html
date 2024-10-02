@@ -1,0 +1,72 @@
+<form id="frmBusquedaDocente"></form>
+    <div class="card text-bg-dark mb-3">
+        <div class="card-header">
+            <div class="d-flex">
+                Consulta de Docentes
+                <div class="ms-auto">
+                    <button type="button" data-form="busqueda_docentes" class="btn-close btn-close-white" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover" id="tblDocentes">
+                <thead>
+                    <tr>
+                        <th>CODIGO</th>
+                        <th>NOMBRE</th>
+                        <th>DIRECCION</th>
+                        <th>TEL</th>
+                        <th>CORREO</th>
+                        <th>DUI</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</form>
+<script>
+    /*
+    Tarea: Realizar la busqueda interactiva de docentes, por codigo, nombre y email.
+    */
+    function eliminarDocente(idDocente){
+        if(confirm("¿Desea eliminar este registro?")){
+            let datos = {
+                accion : "eliminar",
+                idDocente,
+            };
+            enviarDatosDocente(datos);
+        }
+    }
+    function consultarDocentes(){
+        fetch('/docentes')
+        .then(res => res.json())
+        .then(data => {
+            mostrarFilasDocentes(data);
+        })
+        .catch(err => console.log(err));
+    }
+    function mostrarFilasDocentes(data = []){
+        let filas = '';
+        data.forEach(docente => {
+            filas += `
+                <tr onClick='modificarDocente(${JSON.stringify(docente)})'>
+                    <td>${docente.codigo}</td>
+                    <td>${docente.nombre}</td>
+                    <td>${docente.direccion}</td>
+                    <td>${docente.telefono}</td>
+                    <td>${docente.email}</td>
+                    <td>${docente.dui}</td>
+                    <td>
+                        <button type="button" class="btn btn-outline-danger" 
+                            onClick='eliminarDocente(${docente.idDocente})'>DEL
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+        document.querySelector('#tblDocentes > tbody').innerHTML = filas;
+    }
+    consultarDocentes();
+</script>
