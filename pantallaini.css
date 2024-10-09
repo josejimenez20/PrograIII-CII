@@ -1,0 +1,67 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start; /* Alinea el logo a la izquierda */
+    align-items: center;
+    height: 60px; /* Ajusta la altura del header si es necesario */
+}
+
+.logo img {
+    width: 60px; /* Ajusta el tamaño del logo */
+    height: auto;
+    margin-left: 20px;
+}
+
+.main-banner {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    background-image: url('static/img/collage.jpg'); /* Asegúrate de que la ruta de la imagen sea correcta */
+    background-size: cover;
+    background-position: center;
+    text-align: center; /* Centra el texto horizontalmente */
+}
+
+.main-banner h2 {
+    font-size: 4rem; /* Tamaño de las letras */
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 50%;  /* Centra verticalmente */
+    left: 50%; /* Centra horizontalmente */
+    transform: translate(-50%, -50%); /* Asegura que el texto esté completamente centrado */
+}
+
+.overlay-icons {
+    position: absolute;
+    bottom: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.icon {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon img {
+    width: 40px;
+    height: 40px;
+}
