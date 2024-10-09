@@ -65,3 +65,23 @@ header {
     width: 40px;
     height: 40px;
 }
+
+/* Animación al pasar el mouse */
+.icon:hover {
+    transform: translateY(-10px); /* Movimiento hacia arriba */
+    background-color: rgba(255, 255, 255, 1); /* Aumenta la opacidad */
+}
+
+.icon:hover img {
+    transform: scale(1.2); /* Agranda el ícono */
+}
+
+.icon:hover p {
+    opacity: 1; /* Muestra el texto al hacer hover */
+}
+
+/* Animación al hacer clic */
+.icon:active {
+    transform: translateY(0px); /* Evita moverse más hacia arriba */
+    background-color: rgba(220, 220, 220, 1); /* Cambia el color de fondo temporalmente */
+}
