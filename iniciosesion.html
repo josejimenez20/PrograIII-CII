@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Always Salon</title>
     <link rel="stylesheet" href="inicio.css">
+    <style>
+        .forgot-password {
+            text-align: right;
+            display: block;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .forgot-password a {
+            color: #333;
+            text-decoration: none;
+        }
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -24,9 +39,5 @@
                 <label for="password">Contraseña:</label>
                 <input type="password" id="password" name="password">
 
-                <button type="submit">Iniciar Sesión</button>
-            </form>
-        </div>
-    </div>
-</body>
-</html>
+                <!-- Aquí agregamos la opción de 'Olvidaste tu contraseña' -->
+                <span class="forgot-password"><a href="#">¿Olvidaste tu contraseña?</a></span>
