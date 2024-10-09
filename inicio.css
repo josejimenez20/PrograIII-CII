@@ -9,14 +9,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
     background-color: #f5f5f5;
 }
 
 .container {
     display: flex;
-    width: 900px;
-    height: 450px;
+    width: 1400px; /* Ajusta el ancho para que coincida con la imagen */
+    height: 700px; /* Ajusta la altura para que coincida con la imagen */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -84,3 +84,19 @@ button {
 button:hover {
     background-color: #555;
 }
+
+.forgot-password {
+    display: flex; /* Cambiar a flexbox para centrar el contenido */
+    justify-content: center; /* Centra horizontalmente */
+    margin-bottom: 20px; /* Margen para separar del botón */
+}
+
+.forgot-password a {
+    color: #333;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
