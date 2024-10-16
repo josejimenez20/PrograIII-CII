@@ -10,15 +10,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Inicializar la base de datos
 db = SQLAlchemy(app)
 
-#cargar pagina de inicio
-
+# Cargar página de inicio
 @app.route('/')
 def index():
     return render_template('registro.html')
-
-    @app.route('/registro')
-    def index():
-        return render_template('registro.html')
 
 # Crear el modelo de la tabla 'usuarios'
 class Usuario(db.Model):
@@ -39,7 +34,7 @@ def registro():
         telefono = request.form['telefono']
         direccion = request.form['direccion']
         email = request.form['email']
-        contrasena = request.form['contrasena']
+        contrasena = request.form['password']  
 
         nuevo_usuario = Usuario(nombre=nombre, apellido=apellido, telefono=telefono, direccion=direccion, email=email, contrasena=contrasena)
 
@@ -52,17 +47,16 @@ def registro():
 
     return render_template('registro.html')
 
-    # Iniciar el servidor en un puerto:
-    
-
-
+@app.route('/ver_usuarios')
+def ver_usuarios():
+    usuarios = Usuario.query.all()
+    return render_template('ver_usuarios.html', usuarios=usuarios)
 
 if __name__ == '__main__':
-
-
     with app.app_context():
-        
         db.create_all()  # Crear las tablas en la base de datos si aún no existen
         app.run(debug=True, port=5000)
+
+
     
     
