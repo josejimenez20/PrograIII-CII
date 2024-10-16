@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+
 app.secret_key = 'mi_clave_secreta'  # Necesario para usar flash messages
 
 # Configuración de SQLite como base de datos local
@@ -43,7 +44,7 @@ def registro():
             db.session.add(nuevo_usuario)
             db.session.commit()
             flash('Usuario registrado exitosamente', 'success')
-            return redirect(url_for('login'))  # Redirigir a la página de inicio de sesión
+            return redirect(url_for('iniciar_sesion'))  # Redirigir a la página de inicio de sesión
         except Exception as e:
             flash(f'Error al registrar el usuario: {str(e)}', 'danger')
 
@@ -60,16 +61,22 @@ def iniciar_sesion():
         
         if usuario:
             flash('Inicio de sesión exitoso', 'success')
-            return redirect(url_for('ver_usuarios'))  # Redirigir a ver usuarios
+            return redirect(url_for('pantallainicio'))  # Redirigir a la página principal
         else:
             flash('Email o contraseña incorrectos', 'danger')
 
     return render_template('login.html')
 
+# Ruta para ver usuarios
 @app.route('/ver_usuarios')
 def ver_usuarios():
     usuarios = Usuario.query.all()
     return render_template('ver_usuarios.html', usuarios=usuarios)
+
+# Ruta para la página principal después del inicio de sesión (ajusta según tu diseño)
+@app.route('/pantallainicio')
+def pantallainicio():
+    return render_template('pantallainicio.html')  # Asegúrate de que este archivo exista
 
 if __name__ == '__main__':
     with app.app_context():
