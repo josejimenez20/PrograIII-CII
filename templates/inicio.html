@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALBA'S SALON - Inicio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='inicio.css') }}">
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo de Alba's Salon" class="logo">
+        <hr class="line">
+        <div class="buttons">
+            <a href="{{ url_for('registro') }}"><button class="register-btn">Registrarme</button></a>
+            <a href="{{ url_for('iniciar_sesion') }}"><button class="login-btn">Iniciar Sesión</button></a>
+        </div>
+        <div class="social-icons">
+            <a href="#"><img src="{{ url_for('static', filename='img/Facebook.png') }}" alt="Facebook" class="social-icon"></a>
+            <a href="#"><img src="{{ url_for('static', filename='img/Instagram.png') }}" alt="Instagram" class="social-icon"></a>
+            <a href="#"><img src="{{ url_for('static', filename='img/Tiktok.png') }}" alt="TikTok" class="social-icon"></a>
+        </div>
+    </div>
+</body>
+</html>
+
+
+

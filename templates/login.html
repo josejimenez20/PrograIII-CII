@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Always Salon</title>
-    <link rel="stylesheet" href="inicio.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='inicio.css') }}">
     <style>
         .forgot-password {
             text-align: right;
@@ -24,21 +24,19 @@
 <body>
     <div class="container">
         <div class="left-section">
-            <img src="static/img/image2.png" alt="Always Salon">
+            <img src="{{ url_for('static', filename='img/image2.png') }}" alt="Always Salon">
         </div>
         <div class="right-section">
-            <form>
+            <form action="{{ url_for('iniciar_sesion') }}" method="POST">
                 <h2>Iniciar Sesión</h2>
-
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email">
-
+                <input type="email" id="email" name="email" required>
                 <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password">
-                <button type="submit">Inicia sesión</button>
-
-                <button type="submit">Inicia sesión</button>
-
-                <!-- Aquí agregamos la opción de 'Olvidaste tu contraseña' -->
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Iniciar sesión</button>
                 <span class="forgot-password"><a href="#">¿Olvidaste tu contraseña?</a></span>
- 
+            </form>
+        </div>
+    </div>
+</body>
+</html>
