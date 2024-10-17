@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 app.secret_key = 'mi_clave_secreta'  # Necesario para usar flash messages
 
@@ -21,6 +21,7 @@ class Usuario(db.Model):
     direccion = db.Column(db.String(100))
     email = db.Column(db.String(100), unique=True, nullable=False)
     contrasena = db.Column(db.String(255), nullable=False)
+
 
 # Cargar página de inicio
 @app.route('/')

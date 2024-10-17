@@ -4,33 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alba's Salon</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pantallaini.css') }}">
 </head>
 <body>
     <header>
         <div class="logo">
-            <img src="static/img/logo.jpg" alt="Logo Alba's Salon">
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo Alba's Salon">
         </div>
     </header>
-    
+
     <main>
         <section class="main-banner">
             <h2>ALBA'S SALON</h2>
             <div class="overlay-icons">
                 <div class="icon">
-                    <img src="static/img/ambientador.svg" alt="Servicio">
+                    <img src="{{ url_for('static', filename='img/ambientador.svg') }}" alt="Servicio">
                     <p>Servicio</p>
                 </div>
                 <div class="icon">
-                    <img src="static/img/caja-abierta-llena.svg" alt="Productos">
+                    <img src="{{ url_for('static', filename='img/caja-abierta-llena.svg') }}" alt="Productos">
                     <p>Productos</p>
                 </div>
                 <div class="icon">
-                    <img src="static/img/carrito-de-compras.svg" alt="Carrito">
+                    <img src="{{ url_for('static', filename='img/carrito-de-compras.svg') }}" alt="Carrito">
                     <p>Carrito</p>
                 </div>
                 <div class="icon">
-                    <img src="static/img/directorio.svg" alt="Perfil">
+                    <img src="{{ url_for('static', filename='img/directorio.svg') }}" alt="Perfil">
                     <p>Perfil</p>
                 </div>
             </div>
@@ -38,3 +38,4 @@
     </main>
 </body>
 </html>
+
