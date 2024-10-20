@@ -29,7 +29,7 @@ header {
     justify-content: center;
     align-items: center;
     height: 80vh;
-    background-image: url('static/img/collage.jpg'); /* Asegúrate de que la ruta de la imagen sea correcta */
+    background-image: url("img/collage.jpg");
     background-size: cover;
     background-position: center;
     text-align: center; /* Centra el texto horizontalmente */
@@ -44,7 +44,6 @@ header {
     left: 50%; /* Centra horizontalmente */
     transform: translate(-50%, -50%); /* Asegura que el texto esté completamente centrado */
 }
-
 .overlay-icons {
     position: absolute;
     bottom: 20px;
