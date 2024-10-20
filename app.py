@@ -1,27 +1,3 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_sqlalchemy import SQLAlchemy
-
-app = Flask(__name__, static_folder='static')
-
-app.secret_key = 'mi_clave_secreta'  # Necesario para usar flash messages
-
-# Configuración de SQLite como base de datos local
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///salon.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Inicializar la base de datos
-db = SQLAlchemy(app)
-
-# Crear el modelo de la tabla 'usuarios'
-class Usuario(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(50), nullable=False)
-    apellido = db.Column(db.String(50), nullable=False)
-    telefono = db.Column(db.String(20))
-    direccion = db.Column(db.String(100))
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    contrasena = db.Column(db.String(255), nullable=False)
-
 
 # Cargar página de inicio
 @app.route('/')
