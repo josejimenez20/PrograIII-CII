@@ -1,0 +1,94 @@
+<form id="frmAlumno" data-accion="nuevo" data-idalumno="0">
+    <div class="card text-bg-dark mb-3" style="min-width: 700px;">
+        <div class="card-header">
+            <div class="d-flex">
+                Registro de Alumnos
+                <div class="ms-auto">
+                    <button type="button" data-form="alumnos" class="btn-close btn-close-white" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row p-1">
+                <div class="col-3 col-md-2">CODIGO </div>
+                <div class="col-9 col-md-4">
+                    <input type="text" class="form-control" id="txtCodigoAlumno" name="txtCodigoAlumno" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">NOMBRE </div>
+                <div class="col-9 col-md-6">
+                    <input type="text" class="form-control" id="txtNombreAlumno" name="txtNombreAlumno" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">DIRECCION</div>
+                <div class="col-9 col-md-10">
+                    <input type="text" class="form-control" id="txtDireccionAlumno" name="txtDireccionAlumno" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">TELEFONO </div>
+                <div class="col-9 col-md-4">
+                    <input type="text" class="form-control" id="txtTelefonoAlumno" name="txtTelefonoAlumno" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-primary">Guardar</button>
+                </div>
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="reset" class="btn btn-outline-warning">Nuevo</button>
+                </div>
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="button" class="btn btn-outline-success" onclick="abrirVentana('busqueda_alumnos')">BUSCAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    document.querySelector('#frmAlumno').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        
+        let datos = {
+            accion : frmAlumno.dataset.accion,
+            idAlumno : frmAlumno.dataset.idalumno,
+            codigo : txtCodigoAlumno.value,
+            nombre : txtNombreAlumno.value,
+            direccion : txtDireccionAlumno.value,
+            telefono : txtTelefonoAlumno.value
+        };
+        enviarDatosAlumno(datos);
+    });
+    function enviarDatosAlumno(datos){
+        fetch('guardar_alumno/',{
+                method : 'POST',
+                body : JSON.stringify(datos)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if( data.msg==='ok' ){
+                    consultarAlumnos();
+                    limpiarDatosAlumnos();
+                }
+            })
+            .catch(err => console.log(err));
+    }
+    function modificarAlumno(alumno){
+        frmAlumno.dataset.accion = 'modificar';
+        frmAlumno.dataset.idalumno = alumno.id;
+        txtCodigoAlumno.value = alumno.codigo;
+        txtNombreAlumno.value = alumno.nombre;
+        txtDireccionAlumno.value = alumno.direccion;
+        txtTelefonoAlumno.value = alumno.telefono;
+    }
+    function limpiarDatosAlumnos(){
+        frmAlumno.dataset.accion = 'nuevo';
+        frmAlumno.dataset.idalumno = '';
+        txtCodigoAlumno.value = '';
+        txtNombreAlumno.value = '';
+        txtDireccionAlumno.value = '';
+        txtTelefonoAlumno.value = '';
+    }
+</script>

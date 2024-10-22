@@ -1,0 +1,85 @@
+<form id="frmMateria" data-accion="nuevo" data-idmateria="0">
+    <div class="card text-bg-dark mb-3" style="min-width: 700px;">
+        <div class="card-header">
+            <div class="d-flex">
+                Registro de Materias
+                <div class="ms-auto">
+                    <button type="button" data-form="materias" class="btn-close btn-close-white" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row p-1">
+                <div class="col-3 col-md-2">CODIGO </div>
+                <div class="col-9 col-md-4">
+                    <input type="text" class="form-control" id="txtCodigoMateria" name="txtCodigoMateria" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">NOMBRE </div>
+                <div class="col-9 col-md-6">
+                    <input type="text" class="form-control" id="txtNombreMateria" name="txtNombreMateria" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">UV</div>
+                <div class="col-9 col-md-10">
+                    <input type="text" class="form-control" id="txtUvMateria" name="txtUvMateria" required>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-primary">Guardar</button>
+                </div>
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="reset" class="btn btn-outline-warning">Nuevo</button>
+                </div>
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="button" class="btn btn-outline-success" onclick="abrirVentana('busqueda_materias')">BUSCAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    document.querySelector('#frmMateria').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        
+        let datos = {
+            accion : frmMateria.dataset.accion,
+            idMateria : frmMateria.dataset.idmateria,
+            codigo : txtCodigoMateria.value,
+            nombre : txtNombreMateria.value,
+            uv : txtUvMateria.value
+        };
+        enviarDatosMateria(datos);
+    });
+    function enviarDatosMateria(datos){
+        fetch('guardar_materia/',{
+                method : 'POST',
+                body : JSON.stringify(datos)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if( data.msg==='ok' ){
+                    consultarMaterias();
+                    limpiarDatosMaterias();
+                }
+            })
+            .catch(err => console.log(err));
+    }
+    function modificarMateria(materia){
+        frmMateria.dataset.accion = 'modificar';
+        frmMateria.dataset.idmateria = materia.id;
+        txtCodigoMateria.value = materia.codigo;
+        txtNombreMateria.value = materia.nombre;
+        txtUvMateria.value = materia.uv;
+    }
+    function limpiarDatosMaterias(){
+        frmMateria.dataset.accion = 'nuevo';
+        frmMateria.dataset.idmateria = '';
+        txtCodigoMateria.value = '';
+        txtNombreMateria.value = '';
+        txtUvMateria.value = '';
+    }
+</script>

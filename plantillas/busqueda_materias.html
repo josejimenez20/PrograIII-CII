@@ -1,0 +1,67 @@
+<form id="frmBusquedaMateria">
+    <div class="card text-bg-dark mb-3">
+        <div class="card-header">
+            <div class="d-flex">
+                Consulta de Materias
+                <div class="ms-auto">
+                    <button type="button" data-form="busqueda_materias" class="btn-close btn-close-white" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover" id="tblMaterias">
+                <thead>
+                    <tr>
+                        <th>CODIGO</th>
+                        <th>NOMBRE</th>
+                        <th>UV</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</form>
+<script>
+    /*
+    Tarea: Realizar la busqueda interactiva de materias, alumnos y docentes, por codigo, nombre y email.
+    Fecha: 23/10/2024
+    */
+    function eliminarMateria(idMateria){
+        if(confirm("¿Desea eliminar este registro?")){
+            let datos = {
+                accion : "eliminar",
+                idMateria,
+            };
+            enviarDatosMateria(datos);
+        }
+    }
+    function consultarMaterias(){
+        fetch('consultar_materias/')
+        .then(res => res.json())
+        .then(data => {
+            mostrarFilasMaterias(data);
+        })
+        .catch(err => console.log(err));
+    }
+    function mostrarFilasMaterias(data = []){
+        let filas = '';
+        data.forEach(materia => {
+            filas += `
+                <tr onClick='modificarMateria(${JSON.stringify(materia)})'>
+                    <td>${materia.codigo}</td>
+                    <td>${materia.nombre}</td>
+                    <td>${materia.uv}</td>
+                    <td>
+                        <button type="button" class="btn btn-outline-danger" 
+                            onClick='eliminarMateria(${materia.id})'>DEL
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+        document.querySelector('#tblMaterias > tbody').innerHTML = filas;
+    }
+    consultarMaterias();
+</script>
