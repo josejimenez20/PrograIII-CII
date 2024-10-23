@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios</title>
+    <link rel="stylesheet" href="../estilo.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <img src="../img/logo.png" alt="Logo">  <!-- Imagen del logo -->
+        </div>
+        <div class="nav-title">
+            <span>SERVICIOS</span> <!-- Título en la barra -->
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Formulario para crear cita -->
+        <div class="form-box crear-cita">
+            <h2>Nombre del servicio:</h2>
+            <input type="text" placeholder="Escribe el nombre del servicio" id="input-servicio">
+            <h2>Precio:</h2>
+            <input type="text" placeholder="Precio" id="input-precio">
+            <h2>Cliente:</h2>
+            <input type="text" placeholder="Nombre del cliente" id="input-cliente">
+            <h2>Fecha:</h2>
+            <input type="date" id="input-fecha">
+            <h2>Hora:</h2>
+            <input type="time" id="input-hora">
+            <button id="crearCitaBtn">Crear cita</button>
+        </div>
+    
+        <!-- Formulario para mostrar detalles de la cita -->
+        <div class="form-box detalles-cita">
+            <h2>Detalles de la cita</h2>
+            <h2>Nombre del servicio:</h2>
+            <input type="text" id="detalles-servicio" disabled>
+            <h2>Precio:</h2>
+            <input type="text" id="detalles-precio" disabled>
+            <h2>Cliente:</h2>
+            <input type="text" id="detalles-cliente" disabled>
+            <h2>Fecha:</h2>
+            <input type="text" id="detalles-fecha" disabled>
+            <h2>Hora:</h2>
+        </div>
+    </div>
+
+    <script>
+        // Lógica para llenar los detalles de la cita
+        document.getElementById("crearCitaBtn").addEventListener("click", function() {
+            // Obtiene los valores de los campos del formulario
+            const servicio = document.getElementById("input-servicio").value;
+            const precio = document.getElementById("input-precio").value;
+            const cliente = document.getElementById("input-cliente").value;
+            const fecha = document.getElementById("input-fecha").value;
+            const hora = document.getElementById("input-hora").value;
+
+            // Asigna los valores a los campos deshabilitados (detalles de la cita)
+            document.getElementById("detalles-servicio").value = servicio;
+            document.getElementById("detalles-precio").value = precio;
+            document.getElementById("detalles-cliente").value = cliente;
+            document.getElementById("detalles-fecha").value = fecha;
+            document.getElementById("detalles-hora").value = hora;
+        });
+
+        // Función para alternar el contenido de los tips
+        function toggleContent(card) {
+            const content = card.querySelector('.tip-info');
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "block"; // Muestra el contenido
+            } else {
+                content.style.display = "none"; // Oculta el contenido
+            }
+        }
+    </script>
+
+    <!-- Sección de tips -->
+    <section class="tips-section">
+        <div class="tips-header">
+            <h1>TISP PARA TU CITA</h1>
+        </div>
+        <div class="tips-content">
+            <div class="tip-card" onclick="toggleContent(this)">
+                <h3>Mantén tu piel limpia</h3>
+                <p class="tip-info" style="display: none;">Lávate la cara antes de tu cita para obtener mejores resultados.</p>
+            </div>
+            <div class="tip-card" onclick="toggleContent(this)">
+                <h3>Llega a tiempo</h3>
+                <p class="tip-info" style="display: none;">Es importante llegar 10 minutos antes para prepararte.</p>
+            </div>
+            <div class="tip-card" onclick="toggleContent(this)">
+                <h3>Hidrata tu piel</h3>
+                <p class="tip-info" style="display: none;">Usa una crema hidratante ligera el día de tu cita.</p>
+            </div>
+            <div class="alba-salon">
+                Alba's Salon
+            </div>
+        
+        </div>
+
+    </section>
+</body>
+</html>
