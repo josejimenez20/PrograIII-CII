@@ -1,0 +1,144 @@
+<form id="frmDocente" data-accion="nuevo" data-iddocente="0">
+    <div class="card text-bg-dark mb-3" style="min-width: 700px;">
+        <div class="card-header">
+            <div class="d-flex">
+                Registro de Docentes
+                <div class="ms-auto">
+                    <button type="button" data-form="docentes" class="btn-close btn-close-white" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row p-1">
+                <div class="col-3 col-md-2">CODIGO </div>
+                <div class="col-9 col-md-4">
+                    <input type="text" class="form-control" id="txtCodigoDocente" name="txtCodigoDocente" required pattern="[a-zA-Z0-9]+" title="Solo se permiten caracteres alfanuméricos." oninput="validarCodigo(this)">
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">NOMBRE </div>
+                <div class="col-9 col-md-6">
+                    <input type="text" class="form-control" id="txtNombreDocente" name="txtNombreDocente" required pattern="[a-zA-Z\s]+" title="Solo se permiten letras." oninput="validarNombre(this)">
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">DIRECCION</div>
+                <div class="col-9 col-md-10">
+                    <input type="text" class="form-control" id="txtDireccionDocente" name="txtDireccionDocente" required pattern="[a-zA-Z0-9\s]+" title="Solo se permiten letras y números." oninput="validarDireccion(this)">
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">TELEFONO </div>
+                <div class="col-9 col-md-4">
+                    <input type="text" class="form-control" id="txtTelefonoDocente" name="txtTelefonoDocente" required pattern="\d+" title="Solo se permiten números." oninput="validarTelefono(this)">
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">EMAIL </div>
+                <div class="col-9 col-md-4">
+                    <input type="text" class="form-control" id="txtEmailDocente" name="txtEmailDocente" required pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" title="El email debe terminar con @gmail.com." oninput="validarEmail(this)">
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-primary">Guardar</button>
+                </div>
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="reset" class="btn btn-outline-warning">Nuevo</button>
+                </div>
+                <div class="col-12 col-md-4 text-center d-grid gap-2">
+                    <button type="button" class="btn btn-outline-success" onclick="abrirVentana('busqueda_docentes')">BUSCAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+
+<script>
+
+    document.querySelector('#frmDocente').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        let datos = {
+            accion: frmDocente.dataset.accion,
+            idDocente: frmDocente.dataset.iddocente,
+            codigo: txtCodigoDocente.value,
+            nombre: txtNombreDocente.value,
+            direccion: txtDireccionDocente.value,
+            telefono: txtTelefonoDocente.value,
+            email: txtEmailDocente.value
+        };
+        enviarDatosDocente(datos);
+    });
+
+    function enviarDatosDocente(datos) {
+        fetch('guardar_docente/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.msg === 'ok') {
+                if (datos.accion === 'nuevo') {
+                    alertify.success('Docente guardado con éxito');
+                } else if (datos.accion === 'modificar') {
+                    alertify.success('Docente modificado con éxito');
+                } else if (datos.accion === 'eliminar') {
+                }
+                consultarDocentes();
+                limpiarDatosDocentes();
+            }
+        })
+        .catch(err => console.log(err));
+    }
+
+    function modificarDocente(docente) {
+        frmDocente.dataset.accion = 'modificar';
+        frmDocente.dataset.iddocente = docente.id;
+        txtCodigoDocente.value = docente.codigo;
+        txtNombreDocente.value = docente.nombre;
+        txtDireccionDocente.value = docente.direccion;
+        txtTelefonoDocente.value = docente.telefono;
+        txtEmailDocente.value = docente.email;
+    }
+
+    function limpiarDatosDocentes() {
+        frmDocente.dataset.accion = 'nuevo';
+        frmDocente.dataset.iddocente = '';
+        txtCodigoDocente.value = '';
+        txtNombreDocente.value = '';
+        txtDireccionDocente.value = '';
+        txtTelefonoDocente.value = '';
+        txtEmailDocente.value = '';
+    }
+
+    function validarCodigo(input) {
+        input.value = input.value.replace(/[^a-zA-Z0-9]/g, '');
+    }
+
+    function validarNombre(input) {
+        input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+    }
+
+    function validarDireccion(input) {
+        input.value = input.value.replace(/[^a-zA-Z0-9\s]/g, '');
+    }
+
+    function validarTelefono(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    }
+
+    function validarEmail(input) {
+        const regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        if (!regex.test(input.value)) {
+            input.setCustomValidity('El correo electrónico debe ser de Gmail (ej. ejemplo@gmail.com).');
+        } else {
+            input.setCustomValidity('');
+        }
+    }
+
+</script>

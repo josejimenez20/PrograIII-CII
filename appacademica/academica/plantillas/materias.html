@@ -12,19 +12,19 @@
             <div class="row p-1">
                 <div class="col-3 col-md-2">CODIGO </div>
                 <div class="col-9 col-md-4">
-                    <input type="text" class="form-control" id="txtCodigoMateria" name="txtCodigoMateria" required>
+                    <input type="text" class="form-control" id="txtCodigoMateria" name="txtCodigoMateria" required oninput="validarCodigo(this)">
                 </div>
             </div>
             <div class="row p-1">
                 <div class="col-3 col-md-2">NOMBRE </div>
                 <div class="col-9 col-md-6">
-                    <input type="text" class="form-control" id="txtNombreMateria" name="txtNombreMateria" required>
+                    <input type="text" class="form-control" id="txtNombreMateria" name="txtNombreMateria" required oninput="validarNombre(this)">
                 </div>
             </div>
             <div class="row p-1">
                 <div class="col-3 col-md-2">UV</div>
                 <div class="col-9 col-md-10">
-                    <input type="text" class="form-control" id="txtUvMateria" name="txtUvMateria" required>
+                    <input type="text" class="form-control" id="txtUvMateria" name="txtUvMateria" required oninput="validarUv(this)">
                 </div>
             </div>
             <div class="row p-1">
@@ -41,45 +41,74 @@
         </div>
     </div>
 </form>
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+
 <script>
-    document.querySelector('#frmMateria').addEventListener('submit', (e)=>{
+    document.querySelector('#frmMateria').addEventListener('submit', (e) => {
         e.preventDefault();
         
         let datos = {
-            accion : frmMateria.dataset.accion,
-            idMateria : frmMateria.dataset.idmateria,
-            codigo : txtCodigoMateria.value,
-            nombre : txtNombreMateria.value,
-            uv : txtUvMateria.value
+            accion: frmMateria.dataset.accion,
+            idMateria: frmMateria.dataset.idmateria,
+            codigo: txtCodigoMateria.value,
+            nombre: txtNombreMateria.value,
+            uv: txtUvMateria.value
         };
         enviarDatosMateria(datos);
     });
-    function enviarDatosMateria(datos){
-        fetch('guardar_materia/',{
-                method : 'POST',
-                body : JSON.stringify(datos)
-            })
-            .then(res => res.json())
-            .then(data => {
-                if( data.msg==='ok' ){
-                    consultarMaterias();
-                    limpiarDatosMaterias();
+
+    function enviarDatosMateria(datos) {
+        fetch('guardar_materia/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.msg === 'ok') {
+                if (datos.accion === 'nuevo') {
+                    alertify.success('Materia guardada con éxito');
+                } else if (datos.accion === 'modificar') {
+                    alertify.success('Materia modificada con éxito');
+                } else if (datos.accion === 'eliminar') {
+                    alertify.success('Materia eliminada con éxito');
                 }
-            })
-            .catch(err => console.log(err));
+                consultarMaterias();
+                limpiarDatosMaterias();
+            }
+        })
+        .catch(err => console.log(err));
     }
-    function modificarMateria(materia){
+
+    function modificarMateria(materia) {
         frmMateria.dataset.accion = 'modificar';
         frmMateria.dataset.idmateria = materia.id;
         txtCodigoMateria.value = materia.codigo;
         txtNombreMateria.value = materia.nombre;
         txtUvMateria.value = materia.uv;
     }
-    function limpiarDatosMaterias(){
+
+    function limpiarDatosMaterias() {
         frmMateria.dataset.accion = 'nuevo';
         frmMateria.dataset.idmateria = '';
         txtCodigoMateria.value = '';
         txtNombreMateria.value = '';
         txtUvMateria.value = '';
     }
+
+    function validarCodigo(input) {
+        input.value = input.value.replace(/[^a-zA-Z0-9]/g, '');
+    }
+
+    function validarNombre(input) {
+        input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+    }
+
+    function validarUv(input) {
+        input.value = input.value.replace(/[^0-9\s!@#$%^&*()-_=+[\]{};':"\\|,.<>?]/g, '');
+    }
+
+    consultarMaterias();
 </script>

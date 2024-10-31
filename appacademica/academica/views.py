@@ -103,3 +103,8 @@ def guardar_materia(request):
             editMateria = materia.objects.get(id=data.get("idMateria"))
             editMateria.delete()
         return JsonResponse({'msg':'ok', 'idMateria': editMateria.id})
+    
+    from django.http import HttpResponse
+
+
+        

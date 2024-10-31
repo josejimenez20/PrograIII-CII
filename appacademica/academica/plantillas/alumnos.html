@@ -47,7 +47,13 @@
         </div>
     </div>
 </form>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/bootstrap.min.css"/>
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
+
 <script>
+
+
     document.querySelector('#frmAlumno').addEventListener('submit', (e)=>{
         e.preventDefault();
         
@@ -61,20 +67,41 @@
         };
         enviarDatosAlumno(datos);
     });
-    function enviarDatosAlumno(datos){
-        fetch('guardar_alumno/',{
-                method : 'POST',
-                body : JSON.stringify(datos)
-            })
-            .then(res => res.json())
-            .then(data => {
-                if( data.msg==='ok' ){
-                    consultarAlumnos();
-                    limpiarDatosAlumnos();
-                }
-            })
-            .catch(err => console.log(err));
-    }
+    function enviarDatosAlumno(datos) {
+    fetch('guardar_alumno/', {
+        method: 'POST',
+        body: JSON.stringify(datos)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.msg === 'ok') {
+            
+            switch (datos.accion) {
+                case 'nuevo':
+                    alertify.success('Alumno agregado con éxito');
+                    break;
+                case 'modificar':
+                    alertify.success('Alumno modificado con éxito');
+                    break;
+                case 'eliminar':
+                    alertify.success('Alumno eliminado con éxito');
+                    break;
+                default:
+                    alertify.message('Acción realizada con éxito');
+            }
+            consultarAlumnos();
+            limpiarDatosAlumnos();
+        } else {
+            alertify.error('Error al realizar la acción');
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        alertify.error('Ocurrió un error en la solicitud');
+    });
+}
+
+
     function modificarAlumno(alumno){
         frmAlumno.dataset.accion = 'modificar';
         frmAlumno.dataset.idalumno = alumno.id;
