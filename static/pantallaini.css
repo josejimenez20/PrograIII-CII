@@ -84,3 +84,18 @@ header {
     transform: translateY(0px); /* Evita moverse más hacia arriba */
     background-color: rgba(220, 220, 220, 1); /* Cambia el color de fondo temporalmente */
 }
+
+.btn-productos {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: white;
+    background-color: #4CAF50; /* Cambia el color a tu preferencia */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-productos:hover {
+    background-color: #45a049; /* Efecto al pasar el ratón */
+}

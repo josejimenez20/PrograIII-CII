@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productos</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f8f8;
+    }
+
+    header {
+      background-color: #000;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .search-bar {
+      margin: 20px;
+      text-align: center;
+    }
+
+    .search-bar input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 50%;
+    }
+
+    .carousel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin: 20px;
+    }
+
+    .slide {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      text-align: center;
+      width: 200px;
+      display: none; /* Inicialmente oculto para el filtrado */
+    }
+
+    .slide img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .slide p {
+      margin: 10px 0;
+    }
+
+    .slide button {
+      margin: 5px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+    }
+
+    .edit-btn {
+      background-color: #3498db;
+    }
+
+    .add-btn {
+      background-color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+  <!-- Encabezado -->
+  <header>
+    <h1>Productos</h1>
+  </header>
+
+  <!-- Barra de búsqueda -->
+  <div class="search-bar">
+    <label for="search">Buscar productos:</label>
+    <input type="text" id="search" placeholder="Buscar..." oninput="filterProducts()">
+  </div>
+
+  <!-- Botón de agregar producto -->
+  <div style="text-align: center; margin-bottom: 20px;">
+    <button class="add-btn" onclick="addProduct()">Agregar Producto</button>
+  </div>
+
+  <!-- Carrusel de productos -->
+  <div class="carousel" id="product-carousel">
+    <!-- Productos renderizados dinámicamente -->
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+  <script>
+    // Productos iniciales
+    const products = [
+      { id: 1, name: 'Shampoo', category: 'Cuidado del cabello' },
+      { id: 2, name: 'Maquillaje', category: 'Maquillaje' },
+      { id: 3, name: 'Acondicionador', category: 'Cuidado del cabello' },
+      { id: 4, name: 'Secador', category: 'Herramientas' },
+      { id: 5, name: 'Cepillo', category: 'Herramientas' }
+    ];
+
+    // Renderizar productos
+    const renderProducts = (filteredProducts = products) => {
+      const carousel = document.getElementById('product-carousel');
+      carousel.innerHTML = '';
+
+      filteredProducts.forEach(product => {
+        const slide = document.createElement('div');
+        slide.className = 'slide';
+        slide.innerHTML = `
+          <img src="https://via.placeholder.com/200" alt="${product.name}">
+          <p>${product.name}</p>
+          <p>${product.category}</p>
+          <button class="edit-btn" onclick="editProduct(${product.id})">Editar</button>
+          <button class="delete-btn" onclick="confirmDelete(${product.id})">Eliminar</button>
+        `;
+        slide.style.display = 'block'; // Mostrar productos renderizados
+        carousel.appendChild(slide);
+      });
+    };
+
+    // Filtrar productos por nombre o categoría
+    const filterProducts = () => {
+      const searchValue = document.getElementById('search').value.toLowerCase();
+      const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(searchValue) ||
+        product.category.toLowerCase().includes(searchValue)
+      );
+      renderProducts(filteredProducts);
+    };
+
+    // Confirmar eliminación
+    const confirmDelete = (productId) => {
+      alertify.confirm(
+        'Confirmar Eliminación',
+        '¿Estás seguro de que deseas eliminar este producto?',
+        () => {
+          const index = products.findIndex(p => p.id === productId);
+          if (index !== -1) {
+            products.splice(index, 1);
+            filterProducts(); // Aplicar búsqueda al eliminar
+            alertify.success('Producto eliminado con éxito');
+          }
+        },
+        () => {
+          alertify.error('Eliminación cancelada');
+        }
+      );
+    };
+
+    // Agregar producto
+    const addProduct = () => {
+      const name = prompt('Introduce el nombre del producto:');
+      const category = prompt('Introduce la categoría del producto:');
+      if (name && category) {
+        const newProduct = {
+          id: products.length + 1,
+          name,
+          category
+        };
+        products.push(newProduct);
+        filterProducts(); // Aplicar búsqueda después de agregar
+        alertify.success('Producto agregado con éxito');
+      } else {
+        alertify.error('El nombre y la categoría son obligatorios');
+      }
+    };
+
+    // Editar producto
+    const editProduct = (productId) => {
+      const product = products.find(p => p.id === productId);
+      if (product) {
+        const newName = prompt('Nuevo nombre del producto:', product.name);
+        const newCategory = prompt('Nueva categoría del producto:', product.category);
+        if (newName && newCategory) {
+          product.name = newName;
+          product.category = newCategory;
+          filterProducts(); // Aplicar búsqueda después de editar
+          alertify.success('Producto modificado con éxito');
+        } else {
+          alertify.error('Ambos campos son obligatorios');
+        }
+      }
+    };
+
+    // Inicializar la página
+    renderProducts();
+  </script>
+</body>
+</html>
+
