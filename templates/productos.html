@@ -92,40 +92,32 @@
   </style>
 </head>
 <body>
-  <!-- Encabezado -->
   <header>
     <h1>Productos</h1>
   </header>
 
-  <!-- Barra de búsqueda -->
   <div class="search-bar">
     <label for="search">Buscar productos:</label>
     <input type="text" id="search" placeholder="Buscar..." oninput="filterProducts()">
   </div>
 
-  <!-- Botón de agregar producto -->
   <div style="text-align: center; margin-bottom: 20px;">
     <button class="add-btn" onclick="addProduct()">Agregar Producto</button>
   </div>
 
-  <!-- Carrusel de productos -->
-  <div class="carousel" id="product-carousel">
-    <!-- Productos renderizados dinámicamente -->
-  </div>
+  <div class="carousel" id="product-carousel"></div>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
   <script>
-    // Productos iniciales
-    const products = [
-      { id: 1, name: 'Shampoo', category: 'Cuidado del cabello' },
-      { id: 2, name: 'Maquillaje', category: 'Maquillaje' },
-      { id: 3, name: 'Acondicionador', category: 'Cuidado del cabello' },
-      { id: 4, name: 'Secador', category: 'Herramientas' },
-      { id: 5, name: 'Cepillo', category: 'Herramientas' }
-    ];
+    const products = [];
 
-    // Renderizar productos
+    window.onload = async () => {
+      const response = await fetch('/get_products');
+      const data = await response.json();
+      products.push(...data.products);
+      renderProducts();
+    };
+
     const renderProducts = (filteredProducts = products) => {
       const carousel = document.getElementById('product-carousel');
       carousel.innerHTML = '';
@@ -140,12 +132,11 @@
           <button class="edit-btn" onclick="editProduct(${product.id})">Editar</button>
           <button class="delete-btn" onclick="confirmDelete(${product.id})">Eliminar</button>
         `;
-        slide.style.display = 'block'; // Mostrar productos renderizados
+        slide.style.display = 'block';
         carousel.appendChild(slide);
       });
     };
 
-    // Filtrar productos por nombre o categoría
     const filterProducts = () => {
       const searchValue = document.getElementById('search').value.toLowerCase();
       const filteredProducts = products.filter(product =>
@@ -155,17 +146,22 @@
       renderProducts(filteredProducts);
     };
 
-    // Confirmar eliminación
-    const confirmDelete = (productId) => {
+    const confirmDelete = async (id) => {
       alertify.confirm(
         'Confirmar Eliminación',
         '¿Estás seguro de que deseas eliminar este producto?',
-        () => {
-          const index = products.findIndex(p => p.id === productId);
-          if (index !== -1) {
-            products.splice(index, 1);
-            filterProducts(); // Aplicar búsqueda al eliminar
-            alertify.success('Producto eliminado con éxito');
+        async () => {
+          const response = await fetch(`/delete_product/${id}`, { method: 'DELETE' });
+          const result = await response.json();
+          if (response.ok) {
+            const index = products.findIndex(p => p.id === id);
+            if (index !== -1) {
+              products.splice(index, 1);
+              filterProducts();
+              alertify.success('Producto eliminado con éxito');
+            }
+          } else {
+            alertify.error(result.message);
           }
         },
         () => {
@@ -174,44 +170,53 @@
       );
     };
 
-    // Agregar producto
-    const addProduct = () => {
+    const addProduct = async () => {
       const name = prompt('Introduce el nombre del producto:');
       const category = prompt('Introduce la categoría del producto:');
       if (name && category) {
-        const newProduct = {
-          id: products.length + 1,
-          name,
-          category
-        };
-        products.push(newProduct);
-        filterProducts(); // Aplicar búsqueda después de agregar
-        alertify.success('Producto agregado con éxito');
+        const response = await fetch('/add_product', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, category }),
+        });
+        const result = await response.json();
+        if (response.ok) {
+          products.push({ id: result.id, name, category });
+          filterProducts();
+          alertify.success('Producto agregado exitosamente');
+        } else {
+          alertify.error(result.message);
+        }
       } else {
         alertify.error('El nombre y la categoría son obligatorios');
       }
     };
 
-    // Editar producto
-    const editProduct = (productId) => {
-      const product = products.find(p => p.id === productId);
-      if (product) {
-        const newName = prompt('Nuevo nombre del producto:', product.name);
-        const newCategory = prompt('Nueva categoría del producto:', product.category);
-        if (newName && newCategory) {
-          product.name = newName;
-          product.category = newCategory;
-          filterProducts(); // Aplicar búsqueda después de editar
-          alertify.success('Producto modificado con éxito');
+    const editProduct = async (id) => {
+      const newName = prompt('Nuevo nombre del producto:');
+      const newCategory = prompt('Nueva categoría del producto:');
+      if (newName && newCategory) {
+        const response = await fetch(`/edit_product/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: newName, category: newCategory }),
+        });
+        const result = await response.json();
+        if (response.ok) {
+          const product = products.find(p => p.id === id);
+          if (product) {
+            product.name = newName;
+            product.category = newCategory;
+            filterProducts();
+            alertify.success('Producto editado exitosamente');
+          }
         } else {
-          alertify.error('Ambos campos son obligatorios');
+          alertify.error(result.message);
         }
+      } else {
+        alertify.error('Ambos campos son obligatorios');
       }
     };
-
-    // Inicializar la página
-    renderProducts();
   </script>
 </body>
 </html>
-

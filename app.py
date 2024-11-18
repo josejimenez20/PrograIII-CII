@@ -27,8 +27,6 @@ class Producto(db.Model):
     nombre = db.Column(db.String(100), nullable=False)
     categoria = db.Column(db.String(100), nullable=False)
 
-    def __repr__(self):
-        return f'<Producto {self.nombre}>'
 
 # Ruta para la página principal
 @app.route('/')
