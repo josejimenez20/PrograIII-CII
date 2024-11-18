@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'mi_clave_secreta'  # Necesario para usar flash messages
@@ -21,11 +22,61 @@ class Usuario(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     contrasena = db.Column(db.String(255), nullable=False)
 
-# Crear el modelo de la tabla 'productos'
+# Modelo de la tabla 'Servicios'
+class Servicio(db.Model):
+    id_servicio = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(200), nullable=False)
+    descripcion = db.Column(db.Text, nullable=True)
+    precio = db.Column(db.Numeric(10, 2), nullable=False)
+
+# Modelo de la tabla 'Empleados'
+class Empleado(db.Model):
+    id_empleado = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(200), nullable=False)
+    apellido = db.Column(db.String(200), nullable=False)
+    cargo = db.Column(db.String(200), nullable=False)
+    telefono = db.Column(db.String(200))
+    email = db.Column(db.String(200), unique=True)
+
+# Modelo de la tabla 'Citas'
+class Cita(db.Model):
+    id_cita = db.Column(db.Integer, primary_key=True)
+    id_cliente = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    id_empleado = db.Column(db.Integer, db.ForeignKey('empleado.id_empleado'), nullable=False)
+    id_servicio = db.Column(db.Integer, db.ForeignKey('servicio.id_servicio'), nullable=False)
+    fecha = db.Column(db.Date, nullable=False)
+    hora = db.Column(db.Time, nullable=False)
+    campo = db.Column(db.String(200))  # Campo adicional si lo necesitas
+
+# Modelo de la tabla 'Facturas'
+class Factura(db.Model):
+    id_factura = db.Column(db.Integer, primary_key=True)
+    id_cita = db.Column(db.Integer, db.ForeignKey('cita.id_cita'), nullable=False)
+    fecha_emision = db.Column(db.Date, nullable=False)
+    total = db.Column(db.Numeric(10, 2), nullable=False)
+
+# Crear el modelo de la tabla 'Producto'
 class Producto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(100), nullable=False)
+    nombre = db.Column(db.String(200), nullable=False)
     categoria = db.Column(db.String(100), nullable=False)
+
+# Modelo de la tabla 'VentaProducto'
+class VentaProducto(db.Model):
+    id_venta = db.Column(db.Integer, primary_key=True)
+    id_cliente = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    id = db.Column(db.Integer, db.ForeignKey('producto.id_producto'), nullable=False)
+    fecha = db.Column(db.Date, nullable=False)
+    cantidad = db.Column(db.Integer, nullable=False)
+    precio_total = db.Column(db.Numeric(10, 2), nullable=False)
+
+# Modelo de la tabla 'Horarios'
+class Horario(db.Model):
+    id_horario = db.Column(db.Integer, primary_key=True)
+    id_empleado = db.Column(db.Integer, db.ForeignKey('empleado.id_empleado'), nullable=False)
+    dia_semana = db.Column(db.Enum('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'), nullable=False)
+    hora_ini = db.Column(db.Time, nullable=False)
+    hora_fin = db.Column(db.Time, nullable=False)
 
 
 # Ruta para la página principal
@@ -86,7 +137,7 @@ def productos():
 # Ruta para agregar un producto
 @app.route('/add_product', methods=['POST'])
 def add_product():
-    data = request.get_json()  # Recibe los datos en formato JSON
+    data = request.get_json()   
     nombre = data['name']
     categoria = data['category']
 
@@ -99,6 +150,7 @@ def add_product():
     except Exception as e:
         db.session.rollback()
         return {'message': f'Error al agregar el producto: {str(e)}'}, 500
+
 
 # Ruta para editar un producto
 @app.route('/edit_product/<int:id>', methods=['PUT'])
@@ -128,9 +180,9 @@ def delete_product(id):
 # Ruta para obtener todos los productos
 @app.route('/get_products', methods=['GET'])
 def get_products():
-    productos = Producto.query.all()
+    productos = Producto.query.all()  # Consulta todos los productos
     product_list = [{"id": p.id, "name": p.nombre, "category": p.categoria} for p in productos]
-    return {"products": product_list}
+    return {"products": product_list}  # Devuelve la lista en formato JSON
 
 # Iniciar la app
 if __name__ == '__main__':
