@@ -134,6 +134,16 @@ def pantallainicio():
 def productos():
     return render_template('productos.html')
 
+# Ruta paraver citasservicio
+@app.route('/citasservicios')
+def citasservicio():
+    return render_template('citasservicio.html')
+
+# Ruta paraver servicio
+@app.route('/serviccio')
+def servicio():
+    return render_template('servicio.html')
+
 # Ruta para agregar un producto
 @app.route('/add_product', methods=['POST'])
 def add_product():

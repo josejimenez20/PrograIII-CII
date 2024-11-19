@@ -4,7 +4,187 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Servicios</title>
-    <link rel="stylesheet" href="../estilo.css">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('img/Inicio.png'); /* Asegúrate de que esta sea la ruta correcta */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            overflow-x: hidden;
+            padding-top: 60px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: black;
+            color: white;
+            height: 60px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar .logo img {
+            width: 50px;
+            height: auto;
+        }
+
+        .navbar .nav-title {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            display: flex;
+            justify-content: flex-end;
+            padding: 50px;
+            margin-top: 80px;
+            margin-right: 50px;
+            gap: 200px;
+        }
+
+        /* Formularios */
+        .crear-cita {
+            background-color: rgba(105, 77, 65, 0.7);
+            color: white;
+            width: 600px;
+        }
+
+        .detalles-cita {
+            background-color: #030404b3;
+            color: white;
+            width: 300px;
+        }
+
+        .form-box {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .form-box input, .form-box button {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        input[disabled] {
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: gray;
+        }
+
+        /* Sección de tips */
+        .tips-section {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin-top: 20px;
+        }
+
+        .tips-header {
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            width: 50%;
+            margin: 20px auto;
+            border-radius: 30px;
+            text-align: center;
+        }
+
+        .tips-content {
+            background-color: black;
+            display: flex;
+            height: 100%;
+            justify-content: space-around;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tip-card {
+            background-color: #71553db3;
+            color: white;
+            border-radius: 10px;
+            width: 30%;
+            height: 100px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .tip-card:hover {
+            transform: scale(1.05);
+            background-color: #a68e6f;
+        }
+
+        .alba-salon {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin-top: 100px;
+            padding-bottom: 70px;
+        }
+
+        .alba-salon:after {
+            content: '';
+            display: block;
+            width: 50%;
+            margin: 10px auto 0;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .alba-salon:hover:after {
+            width: 100%;
+            background-color: gold;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .tips-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .tip-card {
+                width: 80%;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="navbar">
@@ -44,6 +224,7 @@
             <h2>Fecha:</h2>
             <input type="text" id="detalles-fecha" disabled>
             <h2>Hora:</h2>
+            <input type="text" id="detalles-hora" disabled>
         </div>
     </div>
 
@@ -79,7 +260,7 @@
     <!-- Sección de tips -->
     <section class="tips-section">
         <div class="tips-header">
-            <h1>TISP PARA TU CITA</h1>
+            <h1>TIPS PARA TU CITA</h1>
         </div>
         <div class="tips-content">
             <div class="tip-card" onclick="toggleContent(this)">
@@ -92,14 +273,9 @@
             </div>
             <div class="tip-card" onclick="toggleContent(this)">
                 <h3>Hidrata tu piel</h3>
-                <p class="tip-info" style="display: none;">Usa una crema hidratante ligera el día de tu cita.</p>
+                <p class="tip-info" style="display: none;">Bebe agua para que tu piel esté en su mejor estado.</p>
             </div>
-            <div class="alba-salon">
-                Alba's Salon
-            </div>
-        
         </div>
-
     </section>
 </body>
 </html>
