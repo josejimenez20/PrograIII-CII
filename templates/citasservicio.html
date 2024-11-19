@@ -189,15 +189,14 @@
 <body>
     <header class="navbar">
         <div class="logo">
-            <img src="../img/logo.png" alt="Logo">  <!-- Imagen del logo -->
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo Alba's Salon">
         </div>
         <div class="nav-title">
-            <span>SERVICIOS</span> <!-- Título en la barra -->
-        </div>
+            <span>SERVICIOS</span> 
     </header>
 
     <div class="container">
-        <!-- Formulario para crear cita -->
+        
         <div class="form-box crear-cita">
             <h2>Nombre del servicio:</h2>
             <input type="text" placeholder="Escribe el nombre del servicio" id="input-servicio">
@@ -212,7 +211,7 @@
             <button id="crearCitaBtn">Crear cita</button>
         </div>
     
-        <!-- Formulario para mostrar detalles de la cita -->
+        
         <div class="form-box detalles-cita">
             <h2>Detalles de la cita</h2>
             <h2>Nombre del servicio:</h2>
