@@ -13,24 +13,20 @@
             padding: 0;
             box-sizing: border-box;
             background-color: #f0f0f0;
-            padding-top: 60px;
-            overflow-x: hidden; /* Evitar scroll horizontal */
+            height: 100%; /* Garantiza que tanto el HTML como el body ocupen la altura completa */
+            padding-top: 100px;
+            overflow-x: hidden;
         }
-
-        /* Fondo de la página */
         .background {
-            position: absolute;
+            position: fixed; /* Fija el fondo para cubrir toda la pantalla */
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('img/Inicio.png');
-            background-size: cover;
-            background-position: center;
-            z-index: -1;
+            width: 100vw; /* Abarca el ancho completo de la ventana */
+            height: 100vh; /* Abarca la altura completa de la ventana */
+            background: linear-gradient(to bottom, #808080, #000000); /* Degradado gris a negro */
+            z-index: -1; /* Aparece detrás del contenido */
         }
 
-        /* Estilos para el header */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -45,161 +41,348 @@
             width: 100%;
             z-index: 1000;
         }
-
-        /* Estilo para el logo */
         .navbar .logo img {
-            width: 50px;
+            width: 40px;
             height: auto;
         }
-
-        /* Centrar el título dentro del header */
         .navbar .nav-title {
             flex-grow: 1;
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
         }
-
-        /* Main container */
+        .category-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            gap: 10px;
+        }
+        .category-buttons button {
+            background-color: #2e2d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .category-buttons button:hover {
+            background-color: #5f27cd;
+        }
         .main-container {
             display: flex;
+            flex-wrap: nowrap; /* Evita que las columnas se dividan en filas */
             justify-content: space-between;
-            padding-top: 80px;
-            padding-left: 40px;
-            padding-right: 40px;
+            align-items: stretch; /* Asegura que las dos columnas tengan la misma altura */
+            padding: 20px;
+            min-height: calc(100vh - 60px); /* Hace que el contenedor ocupe al menos toda la pantalla menos el navbar */
         }
 
-        /* Cuadro de información */
         .info-box {
-            width: 30%;
+            flex: 1;
+            max-width: 350px;
             background-color: black;
             color: white;
             padding: 20px;
             border-radius: 10px;
+            margin-right: 20px; /* Espacio entre las columnas */
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between; /* Distribuye el contenido interno */
+            height: auto; /* Permite adaptarse a la altura del contenedor */
         }
 
-        .info-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .info-box .image {
+            margin-bottom: 20px; /* Espacio entre la imagen y el contenido siguiente */
         }
 
-        .image {
-            width: 150px;
-            height: 150px;
-            background-color: rgb(87, 66, 66);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
+        .info-box .image img {
+            width: 300px; /* Establece un ancho fijo */
+            height: 200px; /* Establece una altura fija */
+            object-fit: contain; /* Asegura que la imagen mantenga sus proporciones dentro del contenedor */
+            border-radius: 10px; /* Bordes redondeados */
         }
+        
 
-        .info-details {
-            text-align: center;
-        }
-
-        /* Contenedor de botones de servicios con desplazamiento */
         .container {
-            width: 65%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-height: 80vh; /* Limita el alto para que permita scroll */
-            overflow-y: auto; /* Habilitar desplazamiento vertical */
-            justify-content: flex-start;
-        }
-
-        /* Personalización del scroll */
-        .container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .container::-webkit-scrollbar-thumb {
-            background-color: #888;
+            flex: 2;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background-color: #2e2d4d;
             border-radius: 10px;
+            overflow-y: auto;
+            height: auto; /* Se adapta a la altura de la columna más alta */
         }
 
-        .container::-webkit-scrollbar-track {
-            background-color: #f1f1f1;
-        }
-
-        /* Botones de servicios */
-        .button {
-            background-color: rgb(82, 70, 64);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 18px;
-            cursor: pointer;
-            margin: 15px 0;
-            width: 600px;
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-align: center;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .card-content {
+            padding: 15px;
+        }
+        .card-content h3 {
+            font-size: 18px;
+            margin: 10px 0;
         }
 
-        .button:hover {
-            background-color: #5f27cd;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        /* Estilos responsivos */
+        @media screen and (max-width: 768px) {
+            .navbar .nav-title {
+                font-size: 18px;
+            }
+            .category-buttons {
+                gap: 5px;
+            }
+            .category-buttons button {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            .main-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .info-box {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            .container {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                width: 100%;
+            }
+            .card img {
+                height: 120px;
+            }
+            .card-content h3 {
+                font-size: 16px;
+            }
         }
+        @media screen and (max-width: 480px) {
+            .navbar {
+                flex-direction: column;
+                height: auto;
+                padding: 10px;
+            }
+            .navbar .logo img {
+                width: 30px;
+            }
+            .navbar .nav-title {
+                font-size: 16px;
+                margin-top: 5px;
+            }
+            .category-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+            .category-buttons button {
+                width: 100%;
+                padding: 10px;
+            }
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .card img {
+                height: 100px;
+            }
+        }
+        /* Diseño del enlace como un botón */
+       .button-link {
+         text-decoration: none;
+         background-color: #2e2d4d;
+         color: white;
+         padding: 12px 30px;
+         border-radius: 25px;
+         font-size: 16px;
+         font-weight: bold;
+         text-align: center;
+         transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+       /* Estilos para el cuadro negro */
+      .info-box {
+         flex: 1;
+         max-width: 350px;
+         background-color: black;
+         color: white;
+         padding: 20px;
+         border-radius: 10px;
+         margin-right: 20px;
+         display: flex;
+         flex-direction: column;
+         justify-content: space-between;
+         text-align: left; /* Asegura que el texto dentro de info-box no se centre */
+    }
+    
+    /* Estilos para el enlace del botón */
+    .button-link {
+        display: flex; /* Usamos flexbox para alinear el contenido dentro del enlace */
+        justify-content: center; /* Centra el contenido (el <p>) */
+        text-decoration: none;
+        background-color: #5f27cd; /* Color de fondo */
+        color: white;
+        padding: 8px 15px; /* Tamaño pequeño del botón */
+        border-radius: 5px;
+        width: fit-content; /* Ajusta el ancho al contenido */
+        margin-top: 20px; /* Espacio superior para separar del contenido */
+    }
+    
+    /* Estilos para el texto dentro del botón */
+    .button-link p {
+        margin: 0; /* Elimina márgenes por defecto del <p> */
+        font-size: 14px; /* Ajusta el tamaño del texto */
+    }
+    
     </style>
 </head>
 <body>
-    <!-- Encabezado / Barra de navegación -->
     <header class="navbar">
         <div class="logo">
             <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo Alba's Salon">
         </div>
         <div class="nav-title">
-            <span>SERVICIOS</span> <!-- Título en la barra -->
+            <span>SERVICIOS</span>
         </div>
     </header>
-
-    <!-- Fondo -->
     <div class="background"></div>
-
-    <!-- Contenedor principal con dos columnas -->
+    <div class="category-buttons">
+        <button onclick="filterCategory('Peinados')">Peinados</button>
+        <button onclick="filterCategory('Cortes')">Cortes</button>
+        <button onclick="filterCategory('Tintes')">Tintes</button>
+        <button onclick="filterCategory('Uñas')">Uñas</button>
+        <button onclick="filterCategory('Maquillaje')">Maquillaje</button>
+        <button onclick="filterCategory('TratamientosCapilares')">Tratamientos Capilares</button>
+        
+    </div>
     <div class="main-container">
-        <!-- Cuadro de información del servicio -->
         <div class="info-box" id="infoBox">
             <div class="info-content">
                 <div class="image" id="serviceImage">
-                    <p>Imagen</p>
+                    <img src="static/img/placeholder.jpg" alt="Imagen del servicio">
                 </div>
                 <div class="info-details">
                     <h2 id="serviceTitle">Nombre del servicio</h2>
                     <p><strong>Precio:</strong> <span id="servicePrice">0$</span></p>
                     <p><strong>Detalles:</strong></p>
                     <p id="serviceDescription">Descripción del servicio seleccionado aparecerá aquí.</p>
-                    <button class="btn">Agendar cita</button>
-                    <a href="{{ url_for('citasservicio') }}"><p>Productos</p></a>
+                    <a href="{{ url_for('citasservicio') }}"class="button-link"><p>Crear Cita</p></a>
                 </div>
             </div>
         </div>
-
-        <!-- Contenedor de botones de servicios -->
-        <div class="container">
-            <button class="button" onclick="showInfo('Cortes de Cabello', '15$', 'Cortes de cabello profesionales...')">Cortes de Cabello</button>
-            <button class="button" onclick="showInfo('Color', '50$', 'Coloración de cabello con productos de calidad...')">Color</button>
-            <button class="button" onclick="showInfo('Decoloraciones', '70$', 'Decoloraciones profesionales...')">Decoloraciones</button>
-            <button class="button" onclick="showInfo('Pedicure', '30$', 'Pedicure para el cuidado de los pies...')">Pedicure</button>
-            <button class="button" onclick="showInfo('Manicure', '20$', 'Manicure para uñas perfectas...')">Manicure</button>
-            <button class="button" onclick="showInfo('Esmaltados permanentes', '35$', 'Esmaltado permanente de alta calidad...')">Esmaltados permanentes</button>
-            <button class="button" onclick="showInfo('Uñas Acrílicas y Gel', '40$', 'Uñas acrílicas y de gel duraderas...')">Uñas Acrílicas y Gel</button>
-            <button class="button" onclick="showInfo('Facial', '60$', 'Tratamientos faciales para piel saludable...')">Facial</button>
-            <button class="button" onclick="showInfo('Planchados', '25$', 'Planchado de cabello con estilo...')">Planchados</button>
-            <button class="button" onclick="showInfo('Alisados', '80$', 'Alisado permanente...')">Alisados</button>
-            <button class="button" onclick="showInfo('Pistoleados', '45$', 'Tratamiento con pistoleados...')">Pistoleados</button>
-            <button class="button" onclick="showInfo('Maquillaje', '70$', 'Maquillaje profesional para eventos...')">Maquillaje</button>
-            <button class="button" onclick="showInfo('Perforaciones para niñas', '30$', 'Perforaciones seguras para niñas...')">Perforaciones para niñas</button>
-            <button class="button" onclick="showInfo('Depilaciones', '50$', 'Depilaciones de calidad con cera...')">Depilaciones</button>
+        <div class="container" id="servicesContainer">
+       
         </div>
     </div>
 
-    <script src="script.js"></script> <!-- Enlace al archivo de JavaScript -->
+    <script>
+        const services = {
+            Peinados: [
+            { title: "Novia", price: "20$", description: "Peinados sofisticados y elegantes para el día más especial de tu vida. Incluye asesoramiento personalizado y fijación duradera.", img: "static/img/peinadonovia.jpg" },
+            { title: "Quinceañera Recogido", price: "25$", description: "Estilo clásico y refinado para resaltar tu belleza en este día inolvidable.", img: "static/img/peinadoquince.jpg" },
+            { title: "Quinceañera", price: "20$", description: "Peinados juveniles que mezclan frescura y elegancia, perfectos para celebrar tus 15 años.", img: "static/img/peinadoquincerecogido.jpg" },
+            { title: "Recogido", price: "25$", description: "Peinados altos y elegantes, ideales para eventos formales y especiales.", img: "static/img/recogido.jpg" },
+            { title: "Pistoleado", price: "20$", description: "Estilo relajado con ondas suaves y naturales, ideal para cualquier ocasión.", img: "static/img/pistoleado.jpg" },
+            { title: "Trenza", price: "25$", description: "Trenzas elegantes y modernas, desde estilos clásicos hasta diseños innovadores.", img: "static/img/trenza elegante con coleta.jpg" },
+            { title: "Risos", price: "25$", description: "Rizos definidos y con volumen que darán un toque glamoroso a tu look.", img: "static/img/risos.jpg" },
+        ],
+        
+        Cortes: [
+            { title: "Mariposa", price: "15$", description: "Corte en capas largas con movimiento natural, ideal para cabellos abundantes.", img: "static/img/cortemariposa.jpg" },
+            { title: "Capas", price: "50$", description: "Un look dinámico con volumen y textura, perfecto para cualquier estilo.", img: "static/img/cortecapas.jpg" },
+            { title: "Redondo", price: "15$", description: "Un estilo equilibrado que enmarca el rostro con líneas suaves.", img: "static/img/corteredondo.jpg" },
+            { title: "Asimetrico", price: "50$", description: "Corte moderno y atrevido con longitudes desiguales para un look único.", img: "static/img/asimetrico.jpg" },
+            { title: "Desgrafilado", price: "15$", description: "Corte ligero con puntas afinadas, ideal para reducir volumen y aportar frescura.", img: "static/img/desgrafilado.jpg" },
+            { title: "Recto", price: "50$", description: "Clásico y sofisticado, ideal para quienes buscan un look minimalista.", img: "static/img/recto.jpg" },
+            { title: "Bob Corto", price: "15$", description: "Estilo práctico y moderno, perfecto para resaltar la estructura del rostro.", img: "static/img/bobcorto.jpg" },
+            { title: "Bob Largo", price: "50$", description: "Una opción versátil y elegante que combina longitud y estilo.", img: "static/img/boblargo.jpg" },
+            { title: "Pixie", price: "50$", description: "Corte corto y audaz que destaca las facciones y ofrece un look fresco.", img: "static/img/pixie.jpg" },
+        ],
+        
+        Tintes: [
+            { title: "Rosa", price: "15$", description: "Un toque vibrante y moderno para quienes buscan destacar.", img: "static/img/colorojo.jpg" },
+            { title: "Cenizo", price: "50$", description: "Tonos fríos y elegantes que realzan la sofisticación del cabello.", img: "static/img/color cenizo.jpg" },
+            { title: "Chocolate", price: "15$", description: "Un tono cálido y natural, perfecto para un look clásico.", img: "static/img/colorchocolate.jpg" },
+            { title: "Cobre", price: "50$", description: "Colores cálidos y brillantes que añaden un toque único.", img: "static/img/colorcobre.jpg" },
+            { title: "Rubio", price: "15$", description: "Tonos luminosos para un cambio de look radiante y chic.", img: "static/img/colorubio.jpg" },
+            { title: "Cafe", price: "50$", description: "Natural y versátil, ideal para cualquier estilo.", img: "static/img/colorcafe.jpg" },
+            { title: "Rosado", price: "50$", description: "Sofisticado y atrevido, perfecto para destacar en cualquier ocasión.", img: "static/img/colorosado.jpg" },
+            { title: "Negro", price: "15$", description: "Profundidad y brillo que realzan la elegancia clásica.", img: "static/img/colornegro.jpg" },
+            { title: "Cenizo Lila", price: "50$", description: "Un tono único que mezcla la suavidad del lila con la sofisticación del cenizo.", img: "static/img/colorlila.jpg" },
+        ],
+        
+        Uñas: [
+            { title: "Manicure", price: "20$", description: "Diseños personalizados que destacan tu estilo único.", img: "static/img/manicure.jpg" },
+            { title: "Pedicure", price: "25$", description: "Cuidado y estilo para mantener tus pies saludables y hermosos.", img: "static/img/manicrepies.jpg" },
+            { title: "Acrilico - Estilo Almendra", price: "20$", description: "Elegancia y feminidad en cada detalle.", img: "static/img/uñalamendra.jpg" },
+            { title: "Acrilico . Estilo Estileto", price: "25$", description: "Un diseño atrevido para quienes buscan impactar.", img: "static/img/uñaestileto.jpg" },
+            { title: "Acrilico - Estilo Cuadrado", price: "20$", description: "Sencillez y versatilidad para un estilo moderno.", img: "static/img/uñacuadrada.jpg" },
+            { title: "Acrilico - Estilo Bailarina", price: "25$", description: "Un look delicado y sofisticado que realza tus manos.", img: "static/img/uñabailarina.jpg" },
+        ],
+        
+        Maquillaje: [
+            { title: "Novia", price: "30$", description: "Maquillaje radiante y natural para lucir impecable en tu día especial.", img: "static/img/makedenovia.jpg" },
+            { title: "Quinceañera", price: "30$", description: "Toques juveniles y elegantes que resaltan tu belleza natural.", img: "static/img/makedequince.jpg" },
+            { title: "Artistico", price: "30$", description: "Estilos únicos y creativos para destacar en cualquier evento.", img: "static/img/makeartistico.jpg" },
+            { title: "Catrina", price: "30$", description: "Detalles minuciosos para un look icónico y espectacular.", img: "static/img/makecatrina.jpg" },
+            { title: "Natural", price: "30$", description: "Un estilo fresco y sencillo que realza tu belleza natural.", img: "static/img/makenatural.jpg" },
+            { title: "Sencillo", price: "30$", description: "Toques básicos pero elegantes, ideales para cualquier ocasión.", img: "static/img/makesencillo.jpg" },
+            { title: "Social", price: "30$", description: "Estilo refinado y clásico para eventos importantes.", img: "static/img/makesocial.jpg" },
+            { title: "Estravagante", price: "30$", description: "Maquillaje audaz que resalta tu personalidad única.", img: "static/img/makeestrabagante.jpg" },
+            { title: "Elegante", price: "30$", description: "Tonos suaves y detalles sofisticados para un look impecable de día.", img: "static/img/makeelegantededia.jpg" },
+        ],
+        
+            TratamientosCapilares: [
+                { title: "Alisado Keratina", price: "20$", description: "Ttratamiento para alisar el cabello, reducir el frizz y darle un aspecto suave y brillante. La keratina ayuda a restaurar la proteína perdida en el cabello debido a daños por el calor o tratamientos químicos", img: "static/img/keratina.jpg" },
+                { title: "Reconstrucción capilar", price: "25$", description: "Utiliza productos que ayudan a reparar la estructura interna del cabello, restaurando su fuerza, elasticidad y salud. Ideal para cabello dañado, quebradizo o reseco.", img: "static/img/hidratacion.jpg" },
+                { title: "Hidratación profunda", price: "20$", description: "Tratamiento tiene como objetivo restaurar la humedad perdida del cabello. Ideal para cabellos secos o con puntas abiertas, dejando el cabello suave, manejable y con más brillo.", img: "static/img/capilar.jpg" },
+                { title: "Alisado permanente", price: "25$", description: "Un proceso químico que altera la estructura del cabello para alisarlo de manera duradera, ideal para personas con rizos o cabello ondulado que buscan un estilo lacio.", img: "static/img/permanente.jpg" },
+                { title: "Mascarillas capilares", price: "20$", description: "MUsadas para tratar diversos problemas del cabello, como la sequedad, el frizz o la falta de brillo. Las mascarillas capilares pueden contener ingredientes como aceite de argán, keratina o proteínas vegetales.", img: "static/img/mascarillas.jpg" },
+                { title: "Keratina con botox capilar", price: "25$", description: "Tratamiento combina queratina y Botox para mejorar la apariencia del cabello, proporcionando hidratación, volumen, brillo y suavidad. Ayuda a reducir el frizz y a fortalecer el cabello desde la raíz hasta las puntas.", img: "static/img/botox.jpg" },
+            ],
+
+        };
+
+        function showInfo(title, price, description, imageUrl) {
+            document.getElementById('serviceTitle').innerText = title;
+            document.getElementById('servicePrice').innerText = price;
+            document.getElementById('serviceDescription').innerText = description;
+            document.getElementById('serviceImage').querySelector('img').src = imageUrl;
+        }
+
+        function filterCategory(category) {
+            const container = document.getElementById('servicesContainer');
+            container.innerHTML = '';
+            services[category].forEach(service => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => showInfo(service.title, service.price, service.description, service.img);
+                card.innerHTML = `
+                    <img src="${service.img}" alt="${service.title}">
+                    <div class="card-content">
+                        <h3>${service.title}</h3>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Cargar la categoría inicial (cabello)
+        filterCategory('Peinados');
+    </script>
 </body>
 </html>
