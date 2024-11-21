@@ -1,3 +1,5 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Edu+AU+VIC+WA+NT+Arrows:wght@400..700&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -40,10 +42,11 @@ header {
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     position: absolute;
-    top: 50%;  /* Centra verticalmente */
-    left: 50%; /* Centra horizontalmente */
-    transform: translate(-50%, -50%); /* Asegura que el texto esté completamente centrado */
-}
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'DM Serif Display', serif; /* Usar la fuente DM Serif Display */
+  }
 .overlay-icons {
     position: absolute;
     bottom: 20px;

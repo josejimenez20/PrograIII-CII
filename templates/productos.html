@@ -4,44 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Productos</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Edu+AU+VIC+WA+NT+Arrows:wght@400..700&display=swap');
+    
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f8f8f8;
+      background: linear-gradient(to bottom, #f8f8f8, #808080); /* Degradado de negro a gris */
     }
+    
 
     header {
       background-color: #000;
       color: #fff;
       padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h1 {
-      font-size: 24px;
-      margin: 0;
-    }
-
-    .search-bar {
-      margin: 20px;
       text-align: center;
     }
 
-    .search-bar input {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      width: 50%;
+    header h1 {
+      margin: 0;
+      font-family: 'Edu AU VIC WA NT Arrows', sans-serif; /* Aplicar la nueva fuente */
+      font-size: 2.5rem;
     }
 
-    .carousel {
+    .filter-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .filter-container input, .filter-container select {
+      padding: 10px 15px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .product-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
@@ -49,46 +51,90 @@
       margin: 20px;
     }
 
-    .slide {
+    .product-card {
       background: #fff;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
       text-align: center;
       width: 200px;
-      display: none; /* Inicialmente oculto para el filtrado */
+      overflow: hidden;
+      padding: 10px;
+      cursor: pointer;
     }
 
-    .slide img {
+    .product-card img {
       width: 100%;
       height: 150px;
-      object-fit: cover;
+      object-fit: contain; /* Muestra la imagen completa */
+      background-color: #f0f0f0; /* Fondo gris claro para imágenes más pequeñas */
     }
 
-    .slide p {
-      margin: 10px 0;
+    .product-card h3 {
+      font-size: 18px;
+      margin: 10px 0 5px;
     }
 
-    .slide button {
-      margin: 5px;
-      padding: 8px 12px;
+    .product-card p {
+      font-size: 14px;
+      margin: 5px 0;
+      color: #666;
+    }
+
+    .product-card span {
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      position: relative;
+      width: 80%;
+      max-width: 500px;
+    }
+
+    .modal-content img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .modal-content .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    #buy-button {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      color: #fff;
+      font-size: 16px;
     }
 
-    .delete-btn {
-      background-color: #e74c3c;
+    #buy-button:hover {
+      background-color: #218838;
     }
 
-    .edit-btn {
-      background-color: #3498db;
-    }
-
-    .add-btn {
-      background-color: #27ae60;
-    }
   </style>
 </head>
 <body>
@@ -96,127 +142,103 @@
     <h1>Productos</h1>
   </header>
 
-  <div class="search-bar">
-    <label for="search">Buscar productos:</label>
-    <input type="text" id="search" placeholder="Buscar..." oninput="filterProducts()">
+  <!-- Filtros -->
+  <div class="filter-container">
+    <select id="category" onchange="applyFilters()">
+      <option value="all">Todas</option>
+      <option value="categoria1">Cuidado del Cabello</option>
+      <option value="categoria2">Cuidado de la Piel</option>
+      <option value="categoria3">Maquillaje</option>
+      <option value="categoria4">Cuidado de las Uñas</option>
+      <option value="categoria5">Herramientas de Belleza</option>
+    </select>
+    <input type="text" id="search" placeholder="Buscar por nombre..." oninput="applyFilters()">
   </div>
 
-  <div style="text-align: center; margin-bottom: 20px;">
-    <button class="add-btn" onclick="addProduct()">Agregar Producto</button>
+  <!-- Contenedor de productos -->
+  <div class="product-grid" id="product-grid"></div>
+
+  <!-- Modal -->
+  <div id="product-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <img id="modal-image" src="" alt="Producto">
+      <h2 id="modal-name"></h2>
+      <p id="modal-description"></p>
+      <p><strong>Precio:</strong> <span id="modal-price"></span></p>
+      <button id="buy-button" onclick="buyProduct()">Comprar</button>
+    </div>
   </div>
 
-  <div class="carousel" id="product-carousel"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
   <script>
-    const products = [];
+    const products = [
+    { id: 1, name: 'Shampoo para Crecimiento', category: 'categoria1', description: 'Acelera el crecimiento de tu cabello con nutrientes esenciales.', price: '$20', image: 'static/img/shampocrecimiento.jpg' },
+    { id: 2, name: 'Shampoo para Cabello Liso', category: 'categoria1', description: 'Deja tu cabello suave y perfectamente liso.', price: '$25', image: 'static/img/shampoliso.jpg' },
+    { id: 3, name: 'Shampoo para Rizos', category: 'categoria1', description: 'Cuida tus rizos.', price: '$20', image: 'static/img/shamporizos.jpg' },
+    { id: 4, name: 'Shampoo Hidratante', category: 'categoria1', description: 'Cabello con nutrientes esenciales.', price: '$20', image: 'static/img/shapohidra.jpg' },
+    { id: 5, name: 'Acondicionador', category: 'categoria1', description: 'Acelera el crecimiento de tu cabello con nutrientes esenciales.', price: '$20', image: 'static/img/acondicionador.jpg' },
+    { id: 6, name: 'Acondicionador Extra Acido', category: 'categoria1', description: 'Acelera el crecimiento de tu cabello con nutrientes esenciales.', price: '$20', image: 'static/img/acondicionador1.jpg' },
+    { id: 7, name: 'Acondicionador Neutro', category: 'categoria1', description: 'Acelera el crecimiento de tu cabello con nutrientes esenciales.', price: '$20', image: 'static/img/acondicionador2.jpg' },
+    { id: 8, name: 'Serums Facial', category: 'categoria2', description: 'Base líquida de larga duración para un acabado impecable.', price: '$30', image: 'static/img/serums.jpg' },
+    { id: 9, name: 'Serums para Pestañas', category: 'categoria2', description: 'Formulado para estimular el crecimiento de las pestañas y proporcionar una profunda nutrición.', price: '$30', image: 'static/img/serumpestaña.jpg' },
+    { id: 10, name: 'Exfoliante Corporal', category: 'categoria2', description: 'Con aroma.', price: '$30', image: 'static/img/esfoliante.jpg' },
+    { id: 11, name: 'Exfoliante Sandia', category: 'categoria2', description: 'Con aroma.', price: '$30', image: 'static/img/esfoliante2.jpg' },
+    { id: 12, name: 'Exfoliante Vainilla', category: 'categoria2', description: 'Con aroma.', price: '$30', image: 'static/img/esfoliante3.jpg' },
+    { id: 13, name: 'Gel Acrílico', category: 'categoria4', description: 'Acabado perfecto en tus uñas.', price: '$15', image: 'static/img/gel.jpg' },
+    { id: 14, name: 'Brochas de Maquillaje', category: 'categoria3', description: 'Kit completo para todas tus necesidades de maquillaje.', price: '$40', image: 'static/img/brochas.jpg' },
+    { id: 15, name: 'Mini Paleta Rosee', category: 'categoria3', description: 'Cute.', price: '$40', image: 'static/img/minipaleta.jpg' },
+    { id: 16, name: 'GLOSS', category: 'categoria3', description: 'Cute.', price: '$40', image: 'static/img/gloss.jpg' },
+    { id: 17, name: 'Set para Aplicar Tintes', category: 'categoria5', description: 'Cute.', price: '$40', image: 'static/img/settinte.jpg' },
+    { id: 18, name: 'Mini Brush Pink', category: 'categoria5', description: 'Cute.', price: '$40', image: 'static/img/minibrus.jpg' },
+    { id: 19, name: 'Aceite Nutritivo para Uñas y Cutículas', category: 'categoria4', description: 'Cute.', price: '$40', image: 'static/img/aceitecuticula.jpg' }
+  ];
 
-    window.onload = async () => {
-      const response = await fetch('/get_products');
-      const data = await response.json();
-      products.push(...data.products);
-      renderProducts();
-    };
-
-    const renderProducts = (filteredProducts = products) => {
-      const carousel = document.getElementById('product-carousel');
-      carousel.innerHTML = '';
+    const renderProducts = (filteredProducts) => {
+      const grid = document.getElementById('product-grid');
+      grid.innerHTML = '';
 
       filteredProducts.forEach(product => {
-        const slide = document.createElement('div');
-        slide.className = 'slide';
-        slide.innerHTML = `
-          <img src="https://via.placeholder.com/200" alt="${product.name}">
-          <p>${product.name}</p>
-          <p>${product.category}</p>
-          <button class="edit-btn" onclick="editProduct(${product.id})">Editar</button>
-          <button class="delete-btn" onclick="confirmDelete(${product.id})">Eliminar</button>
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p>${product.description}</p>
+          <span>${product.price}</span>
         `;
-        slide.style.display = 'block';
-        carousel.appendChild(slide);
+        card.onclick = () => openModal(product);
+        grid.appendChild(card);
       });
     };
 
-    const filterProducts = () => {
-      const searchValue = document.getElementById('search').value.toLowerCase();
-      const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchValue) ||
-        product.category.toLowerCase().includes(searchValue)
-      );
+    const openModal = (product) => {
+      document.getElementById('modal-image').src = product.image;
+      document.getElementById('modal-name').textContent = product.name;
+      document.getElementById('modal-description').textContent = product.description;
+      document.getElementById('modal-price').textContent = product.price;
+      document.getElementById('product-modal').style.display = 'flex';
+    };
+
+    const closeModal = () => {
+      document.getElementById('product-modal').style.display = 'none';
+    };
+
+   
+
+    const applyFilters = () => {
+      const category = document.getElementById('category').value;
+      const search = document.getElementById('search').value.toLowerCase();
+
+      const filteredProducts = products.filter(product => {
+        const matchesCategory = category === 'all' || product.category === category;
+        const matchesSearch = product.name.toLowerCase().includes(search);
+        return matchesCategory && matchesSearch;
+      });
+
       renderProducts(filteredProducts);
     };
 
-    const confirmDelete = async (id) => {
-      alertify.confirm(
-        'Confirmar Eliminación',
-        '¿Estás seguro de que deseas eliminar este producto?',
-        async () => {
-          const response = await fetch(`/delete_product/${id}`, { method: 'DELETE' });
-          const result = await response.json();
-          if (response.ok) {
-            const index = products.findIndex(p => p.id === id);
-            if (index !== -1) {
-              products.splice(index, 1);
-              filterProducts();
-              alertify.success('Producto eliminado con éxito');
-            }
-          } else {
-            alertify.error(result.message);
-          }
-        },
-        () => {
-          alertify.error('Eliminación cancelada');
-        }
-      );
-    };
-
-    const addProduct = async () => {
-      const name = prompt('Introduce el nombre del producto:');
-      const category = prompt('Introduce la categoría del producto:');
-      if (name && category) {
-        const response = await fetch('/add_product', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, category }),
-        });
-        const result = await response.json();
-        if (response.ok) {
-          products.push({ id: result.id, name, category });
-          filterProducts();
-          alertify.success('Producto agregado exitosamente');
-        } else {
-          alertify.error(result.message);
-        }
-      } else {
-        alertify.error('El nombre y la categoría son obligatorios');
-      }
-    };
-
-    const editProduct = async (id) => {
-      const newName = prompt('Nuevo nombre del producto:');
-      const newCategory = prompt('Nueva categoría del producto:');
-      if (newName && newCategory) {
-        const response = await fetch(`/edit_product/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: newName, category: newCategory }),
-        });
-        const result = await response.json();
-        if (response.ok) {
-          const product = products.find(p => p.id === id);
-          if (product) {
-            product.name = newName;
-            product.category = newCategory;
-            filterProducts();
-            alertify.success('Producto editado exitosamente');
-          }
-        } else {
-          alertify.error(result.message);
-        }
-      } else {
-        alertify.error('Ambos campos son obligatorios');
-      }
-    };
+    renderProducts(products); // Muestra todos los productos inicialmente
   </script>
 </body>
 </html>
