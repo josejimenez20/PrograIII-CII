@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from difflib import SequenceMatcher
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'mi_clave_secreta'  # Necesario para usar flash messages
@@ -94,31 +95,63 @@ def index():
 @app.route('/populate_chatbot', methods=['GET'])
 def populate_chatbot():
     datos = [
-        {"pregunta": "¿Qué servicios ofrecen?", "respuesta": "Ofrecemos cortes de cabello, manicura, pedicura y tratamientos faciales."},
-        {"pregunta": "¿Cuáles son los precios?", "respuesta": "Nuestros precios varían según el servicio. Por ejemplo, un corte de cabello cuesta $20."},
-        {"pregunta": "¿Dónde están ubicados?", "respuesta": "Estamos en la calle Principal #123, en el centro de la ciudad."}
+        {"pregunta": "Hola", "respuesta": "¡Hola! ¿En qué puedo ayudarte?"},
+        {"pregunta": "Que servicios ofrecen?", "respuesta": "Ofrecemos cortes de cabello, manicura, pedicura y tratamientos faciales."},
+        {"pregunta": "Cuales son los precios?", "respuesta": "Nuestros precios varían según el servicio. Puedes consultarlos en nuestra página web."},
+        {"pregunta": "Donde estan ubicados?", "respuesta": "Estamos en la calle Principal, en el centro de la ciudad de Jiquilisco."},
+        {"pregunta": "Cuales son los horarios de atencion?", "respuesta": "Abrimos de lunes a sábado de 7:00 AM a 5:00 PM."},
+        {"pregunta": "Ofrecen servicios a domicilio?", "respuesta": "Sí, ofrecemos servicios a domicilio con un costo adicional dependiendo de la distancia."},
+        {"pregunta": "Como puedo agendar una cita?", "respuesta": "Puedes agendar una cita llamándonos al 555-123-456 o a través de nuestra página web."},
+        {"pregunta": "Aceptan pagos con tarjeta?", "respuesta": "Sí, aceptamos tarjetas de crédito, débito y también pagos en efectivo."},
+        {"pregunta": "Tienen promociones?", "respuesta": "Sí, tenemos descuentos especiales los fines de semana. Por ejemplo, 20% en tratamientos faciales los viernes."},
+        {"pregunta": "Cuanto cuesta una manicura?", "respuesta": "Una manicura básica cuesta $15. También ofrecemos paquetes premium."},
+        {"pregunta": "Puedo cancelar o reprogramar mi cita?", "respuesta": "Sí, puedes cancelar o reprogramar tu cita llamándonos con al menos 24 horas de anticipación."},
+        {"pregunta": "Que productos usan en el salón?", "respuesta": "Usamos productos de alta calidad como L'Oréal, Kerastase y OPI para asegurar los mejores resultados."},
+        {"pregunta": "Hay servicios para niños?", "respuesta": "Sí, ofrecemos cortes de cabello para niños a un precio especial."},
+        {"pregunta": "Tienen servicio de depilación?", "respuesta": "Sí, ofrecemos depilación con cera y láser."},
+        {"pregunta": "Gracias", "respuesta": "Fue un placer ayudarte, si tienes alguna otra pregunta no dudes en preguntar."}
     ]
 
     try:
+        # Aquí verificamos que no se repitan las preguntas en la base de datos antes de insertarlas
         for dato in datos:
-            nuevo = ChatbotRespuesta(pregunta=dato["pregunta"], respuesta=dato["respuesta"])
-            db.session.add(nuevo)
-        db.session.commit()
+            if not ChatbotRespuesta.query.filter_by(pregunta=dato["pregunta"]).first():
+                nuevo = ChatbotRespuesta(pregunta=dato["pregunta"], respuesta=dato["respuesta"])
+                db.session.add(nuevo)
+        db.session.commit()  # Commit para guardar los cambios
+
         return "Preguntas y respuestas agregadas exitosamente."
     except Exception as e:
-        db.session.rollback()
+        db.session.rollback()  # En caso de error, deshacemos los cambios
         return f"Error al poblar la base de datos: {str(e)}"
+
 
 # Ruta para procesar preguntas del chatbot
 @app.route('/chatbot', methods=['POST'])
 def chatbot():
     data = request.get_json()
-    pregunta_usuario = data.get("pregunta", "").lower()
+    pregunta_usuario = data.get("pregunta", "").lower().strip()
 
-    respuesta = ChatbotRespuesta.query.filter(ChatbotRespuesta.pregunta.ilike(f"%{pregunta_usuario}%")).first()
-    
-    if respuesta:
-        return jsonify({"respuesta": respuesta.respuesta})
+    # Obtener todas las preguntas de la base de datos
+    respuestas = ChatbotRespuesta.query.all()
+    preguntas = [{"pregunta": r.pregunta.lower(), "respuesta": r.respuesta} for r in respuestas]
+
+    # Buscar la pregunta más similar
+    def encontrar_similar(pregunta_usuario, lista_preguntas):
+        similaridad_max = 0
+        mejor_respuesta = None
+        for item in lista_preguntas:
+            similaridad = SequenceMatcher(None, pregunta_usuario, item['pregunta']).ratio()
+            if similaridad > similaridad_max:
+                similaridad_max = similaridad
+                mejor_respuesta = item
+        return mejor_respuesta if similaridad_max > 0.6 else None  
+
+    respuesta_similar = encontrar_similar(pregunta_usuario, preguntas)
+
+    # Responder con la respuesta encontrada o un mensaje genérico
+    if respuesta_similar:
+        return jsonify({"respuesta": respuesta_similar['respuesta']})
     else:
         return jsonify({"respuesta": "Lo siento, no entiendo tu pregunta. ¿Puedes reformularla?"})
 
