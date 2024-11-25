@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__, static_folder='static')
-app.secret_key = 'mi_clave_secreta'  # Necesario para usar flash messages
 
 # Configuración de SQLite como base de datos local
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///salon.db'
@@ -120,7 +119,8 @@ def iniciar_sesion():
             flash('Inicio de sesión exitoso', 'success')
             return redirect(url_for('pantallainicio'))  # Redirigir a la página principal
         else:
-            flash('Email o contraseña incorrectos', 'danger')
+            # Pasar el mensaje para que se muestre la notificación
+            return render_template('login.html', alertify_message="Email o contraseña incorrectos")
 
     return render_template('login.html')
 
