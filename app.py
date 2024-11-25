@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__, static_folder='static')
+app.secret_key = 'mi_clave_secreta'  # Necesario para usar flash messages
 
 # Configuración de SQLite como base de datos local
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///salon.db'
@@ -116,13 +117,13 @@ def iniciar_sesion():
         usuario = Usuario.query.filter_by(email=email, contrasena=contrasena).first()
 
         if usuario:
-            flash('Inicio de sesión exitoso', 'success')
-            return redirect(url_for('pantallainicio'))  # Redirigir a la página principal
+            flash('Inicio de sesión exitoso', 'success')  # Notificación de éxito
+            return redirect(url_for('pantallainicio'))  # Redirige al usuario a la página de inicio
         else:
-            # Pasar el mensaje para que se muestre la notificación
-            return render_template('login.html', alertify_message="Email o contraseña incorrectos")
+            flash('Correo o contraseña incorrectos', 'danger')  # Notificación de error
 
     return render_template('login.html')
+
 
 # Ruta para la página principal después del inicio de sesión (ajusta según tu diseño)
 @app.route('/pantallainicio')
@@ -193,6 +194,15 @@ def get_products():
     productos = Producto.query.all()  # Consulta todos los productos
     product_list = [{"id": p.id, "name": p.nombre, "category": p.categoria} for p in productos]
     return {"products": product_list}  # Devuelve la lista en formato JSON
+
+@app.route('/carrito')
+def carrito():
+    return "Página del carrito"
+
+@app.route('/perfil')
+def perfil():
+    return "Página del perfil"
+
 
 # Iniciar la app
 if __name__ == '__main__':
