@@ -22,6 +22,12 @@ class Usuario(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     contrasena = db.Column(db.String(255), nullable=False)
 
+# Modelo para las preguntas y respuestas del chatbot
+class ChatbotRespuesta(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    pregunta = db.Column(db.String(255), unique=True, nullable=False)
+    respuesta = db.Column(db.Text, nullable=False)
+
 # Modelo de la tabla 'Servicios'
 class Servicio(db.Model):
     id_servicio = db.Column(db.Integer, primary_key=True)
@@ -83,6 +89,39 @@ class Horario(db.Model):
 @app.route('/')
 def index():
     return render_template('inicio.html')
+
+# Ruta para poblar la tabla del chatbot con datos iniciales
+@app.route('/populate_chatbot', methods=['GET'])
+def populate_chatbot():
+    datos = [
+        {"pregunta": "¿Qué servicios ofrecen?", "respuesta": "Ofrecemos cortes de cabello, manicura, pedicura y tratamientos faciales."},
+        {"pregunta": "¿Cuáles son los precios?", "respuesta": "Nuestros precios varían según el servicio. Por ejemplo, un corte de cabello cuesta $20."},
+        {"pregunta": "¿Dónde están ubicados?", "respuesta": "Estamos en la calle Principal #123, en el centro de la ciudad."}
+    ]
+
+    try:
+        for dato in datos:
+            nuevo = ChatbotRespuesta(pregunta=dato["pregunta"], respuesta=dato["respuesta"])
+            db.session.add(nuevo)
+        db.session.commit()
+        return "Preguntas y respuestas agregadas exitosamente."
+    except Exception as e:
+        db.session.rollback()
+        return f"Error al poblar la base de datos: {str(e)}"
+
+# Ruta para procesar preguntas del chatbot
+@app.route('/chatbot', methods=['POST'])
+def chatbot():
+    data = request.get_json()
+    pregunta_usuario = data.get("pregunta", "").lower()
+
+    respuesta = ChatbotRespuesta.query.filter(ChatbotRespuesta.pregunta.ilike(f"%{pregunta_usuario}%")).first()
+    
+    if respuesta:
+        return jsonify({"respuesta": respuesta.respuesta})
+    else:
+        return jsonify({"respuesta": "Lo siento, no entiendo tu pregunta. ¿Puedes reformularla?"})
+
 
 # Ruta para el formulario de registro
 @app.route('/registro', methods=['GET', 'POST'])

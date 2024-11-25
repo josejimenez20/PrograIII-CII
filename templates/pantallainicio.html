@@ -5,6 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alba's Salon</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='pantallaini.css') }}">
+<style>
+/* Estilo del botón flotante */
+#chatbot-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #7AB4C7;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    animation: moveButton 0.5s ease-in-out infinite alternate; 
+}
+
+#chatbot-button img {
+    width: 40px;  /* Ajusta el tamaño del ícono */
+    height: 40px; /* Ajusta el tamaño del ícono */
+}
+
+/* Animación para el botón flotante */
+@keyframes moveButton {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Estilo de los mensajes */
+.message {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    max-width: 80%;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Animación de los mensajes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilo de la ventana del chatbot */
+#chatbot-window {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 350px;
+    height: 400px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+/* Estilo de la ventana de mensaje del chatbot */
+#chatbot-header {
+    background-color: #7AB4C7;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Estilo del área de los mensajes */
+#chatbot-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+/* Estilo del pie de la ventana del chatbot */
+#chatbot-footer {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+/* Estilo de la caja de entrada */
+#chatbot-footer input {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+/* Estilo del botón de enviar */
+#chatbot-footer button {
+    margin-left: 5px;
+    padding: 5px 10px;
+    background-color: #7AB4C7;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+</style>
 </head>
 <body>
     <header>
@@ -36,5 +156,67 @@
             </div>
         </section>
     </main>
+
+    <!-- Botón del chatbot -->
+    <button id="chatbot-button">
+        <img src="{{ url_for('static', filename='img/chatbot.jpeg') }}" alt="Chatbot">
+    </button>
+
+    <!-- Ventana del chatbot -->
+    <div id="chatbot-window">
+        <div id="chatbot-header">Asistente Virtual</div>
+        <div id="chatbot-body">
+            <p>¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte?</p>
+        </div>
+        <div id="chatbot-footer">
+            <input type="text" id="chatbot-input" placeholder="Escribe un mensaje...">
+            <button id="chatbot-send">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        const chatbotButton = document.getElementById('chatbot-button');
+        const chatbotWindow = document.getElementById('chatbot-window');
+        const chatbotSend = document.getElementById('chatbot-send');
+        const chatbotBody = document.getElementById('chatbot-body');
+    
+        chatbotButton.addEventListener('click', () => {
+            chatbotWindow.style.display = chatbotWindow.style.display === 'flex' ? 'none' : 'flex';
+        });
+    
+        chatbotSend.addEventListener('click', () => {
+            const userInput = document.getElementById('chatbot-input').value;
+            if (userInput.trim()) {
+                // Mostrar el mensaje del usuario en el chat
+                const userMessage = document.createElement('p');
+                userMessage.textContent = `Tú: ${userInput}`;
+                chatbotBody.appendChild(userMessage);
+    
+                // Enviar el mensaje del usuario al servidor Flask para obtener la respuesta
+                fetch('/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ pregunta: userInput })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Mostrar la respuesta del bot
+                    const botMessage = document.createElement('p');
+                    botMessage.textContent = `Bot: ${data.respuesta}`;
+                    chatbotBody.appendChild(botMessage);
+    
+                    chatbotBody.scrollTop = chatbotBody.scrollHeight;
+                    document.getElementById('chatbot-input').value = ''; // Limpiar el campo de entrada
+                })
+                .catch(error => {
+                    console.error('Error al obtener la respuesta del chatbot:', error);
+                });
+            }
+        });
+    </script>
+    
 </body>
 </html>
+
