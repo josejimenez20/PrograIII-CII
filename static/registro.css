@@ -1,74 +1,178 @@
-* { 
+/* Reset General */
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 body {
+    font-family: 'Montserrat', sans-serif; /* Fuente moderna y elegante */
+    background: linear-gradient(to bottom, #333, #555); /* Fondo degradado negro y gris */
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #fff;
-    font-family: Arial, sans-serif;
-    position: relative;
+    color: #fff;
 }
 
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px); /* Mueve ligeramente hacia abajo */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* Posición final */
+    }
+}
+
+/* Contenedor principal */
 .container {
-    width: 100%;
-    height: 100%;
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    max-width: 1200px;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo negro translúcido */
+    border-radius: 15px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* Bordes redondeados */
+    animation: fadeIn 1.5s ease-out; /* Llama a la animación */
+}
+
+/* Sección del logo */
+.logo-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #222; /* Fondo gris oscuro */
+    padding: 20px;
+}
+
+.logo-section img {
+    max-width: 80%; /* Ajuste del tamaño del logo */
+    height: auto;
+    border-radius: 10px; /* Bordes redondeados para el logo */
+}
+
+/* Sección de la imagen */
+.left-section {
+    flex: 2; /* Más espacio para la imagen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333; /* Fondo gris oscuro */
 }
 
 .left-section img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.7;
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px; /* Bordes redondeados para la imagen */
+    filter: brightness(0.9); /* Ajuste de brillo */
+    animation: fadeIn 2.5s ease-out; /* Animación progresiva para la imagen */
 }
 
-.background-image {
-    max-width: 100%; 
-    max-height: 100%; 
-    object-fit: contain; 
-    margin: auto; 
+/* Sección derecha con el formulario */
+.right-section {
+    flex: 2;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #444; /* Fondo gris oscuro */
+    animation: fadeIn 2s ease-out; /* Más lento que el contenedor principal */
 }
 
 h2 {
-    font-size: 35px;
-    margin-bottom: 50px;
-    margin-left: 50px; /* Ajusta este valor para mover el texto más a la derecha */
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #fff;
+    text-align: center;
 }
 
+/* Formulario */
 form {
+    width: 100%;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
 label {
-    font-size: 16px;
+    font-size: 14px;
+    color: #ccc;
 }
 
 input {
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo translúcido */
+    color: #fff;
+    outline: none;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeIn 1.8s ease-out; /* Efecto suave para los inputs */
 }
 
+input:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+/* Botón */
 button {
-    padding: 15px;
+    padding: 12px;
     font-size: 16px;
-    background-color: white;
-    color: black;
-    border: 2px solid black;
+    background-color: #000; /* Fondo negro */
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
     cursor: pointer;
-    border-radius: 20px;
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    text-transform: uppercase;
+    animation: fadeIn 2s ease-out; /* Efecto dinámico */
 }
 
 button:hover {
-    transform: scale(1.1);
-    background-color: #333;
-    color: white;
+    background-color: #222; /* Oscurece ligeramente */
+    transform: translateY(-3px); /* Pequeño efecto de elevación */
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        max-width: 100%;
+    }
+
+    .logo-section {
+        display: none; /* Oculta el logo en pantallas pequeñas */
+    }
+
+    .left-section {
+        height: 200px;
+    }
+
+    .right-section {
+        padding: 30px;
+    }
+
+    input, button {
+        font-size: 14px;
+    }
 }

@@ -1,66 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    animation: fadeIn 1s ease-out;
 }
 
 .container {
     text-align: center;
     width: 100%;
-    max-width: 800px;
-    padding: 20px;
+    max-width: 900px;
+    padding: 50px 30px;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: scaleIn 1.5s ease-out;
 }
 
 .container .logo {
-    width: 200px;
-    margin-bottom: 30px;
+    width: auto;
+    height: 350px; 
+    margin-bottom: 10px; 
+    animation: bounce 1s ease-in-out;
+    object-fit: contain;
 }
 
 .container .line {
     border: none;
-    border-top: 1px solid #ccc;
-    margin: 20px 0;
+    border-top: 2px solid #ddd;
+    margin: 10px 0; 
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .container .buttons {
     display: flex;
     justify-content: center;
-    gap: 40px;
-    margin-bottom: 30px;
+    gap: 50px;
+    margin-bottom: 40px;
 }
 
 .container .register-btn, .container .login-btn {
-    background-color: #000;
+    background-color: #060606;
     color: #fff;
     border: none;
-    padding: 15px 40px;
-    border-radius: 25px;
-    font-size: 20px;
+    padding: 18px 50px;
+    border-radius: 30px;
+    font-size: 18px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
 .container .register-btn:hover, .container .login-btn:hover {
-    background-color: #333;
-    transform: scale(1.1);
+    background-color: #282a2b;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .container .social-icons {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 35px;
 }
 
 .container .social-icon {
-    width: 50px;
-    transition: transform 0.3s;
+    width: 55px;
+    transition: transform 0.3s, filter 0.3s;
 }
 
 .container .social-icon:hover {
     transform: scale(1.3);
+    filter: brightness(1.2);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
 }

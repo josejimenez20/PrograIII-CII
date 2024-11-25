@@ -13,6 +13,12 @@ body {
     min-height: 100vh;
     background: linear-gradient(135deg, rgb(53, 49, 51), #100e0d);
     font-family: 'Poppins', sans-serif;
+    animation: fadeInBackground 2s ease-in-out;
+}
+
+@keyframes fadeInBackground {
+    0% { background: linear-gradient(135deg, rgb(53, 49, 51), #100e0d); }
+    100% { background: linear-gradient(135deg, #100e0d, rgb(53, 49, 51)); }
 }
 
 .container {
@@ -21,12 +27,24 @@ body {
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    animation: slideInContainer 1s ease-out;
+}
+
+@keyframes slideInContainer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0); }
 }
 
 .left-section {
     width: 50%;
     background: #333;
     position: relative;
+    animation: zoomIn 1s ease-out;
+}
+
+@keyframes zoomIn {
+    0% { transform: scale(1.1); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .left-section img {
@@ -34,6 +52,12 @@ body {
     height: 100%;
     object-fit: cover;
     opacity: 0.7;
+    animation: fadeInImage 1.5s ease-in-out;
+}
+
+@keyframes fadeInImage {
+    0% { opacity: 0; }
+    100% { opacity: 0.7; }
 }
 
 .right-section {
@@ -44,12 +68,24 @@ body {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    animation: fadeInRightSection 1.5s ease-out;
+}
+
+@keyframes fadeInRightSection {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 h3 {
     font-size: 2rem;
     margin-bottom: 20px;
     color: #333;
+    animation: fadeInText 1s ease-out;
+}
+
+@keyframes fadeInText {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 form label {
@@ -58,6 +94,12 @@ form label {
     font-weight: 600;
     margin-top: 10px;
     color: #666;
+    animation: fadeInLabel 1s ease-out;
+}
+
+@keyframes fadeInLabel {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 form input {
@@ -67,11 +109,13 @@ form input {
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1rem;
+    transition: all 0.3s ease;
 }
 
 form input:focus {
     border-color: rgb(27, 26, 26);
     outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 button {
@@ -83,6 +127,13 @@ button {
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    animation: pulseButton 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseButton {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }
 
 button:hover {
@@ -92,6 +143,12 @@ button:hover {
 
 .forgot-password {
     margin-top: 15px;
+    animation: fadeInForgotPassword 1.5s ease-out;
+}
+
+@keyframes fadeInForgotPassword {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 .forgot-password a {
@@ -102,6 +159,7 @@ button:hover {
 
 .forgot-password a:hover {
     text-decoration: underline;
+    color: #474746;
 }
 
 .alertify-notifier {
