@@ -6,7 +6,7 @@
     <title>Página de Servicios</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* Estilos generales */
+        
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
@@ -273,7 +273,7 @@
         <div class="info-box" id="infoBox">
             <div class="info-content">
                 <div class="image" id="serviceImage">
-                    <img src="static/img/placeholder.jpg" alt="Imagen del servicio">
+                    <img src="{{ url_for('static', filename='img/placeholder.png') }}" alt="Imagen del servicio">
                 </div>
                 <div class="info-details">
                     <h2 id="serviceTitle">Nombre del servicio</h2>
