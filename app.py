@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, session, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from difflib import SequenceMatcher
+
+
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'mi_clave_secreta'  # Necesario para usar flash messages
@@ -9,6 +11,7 @@ app.secret_key = 'mi_clave_secreta'  # Necesario para usar flash messages
 # Configuración de SQLite como base de datos local
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///salon.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 
 # Inicializar la base de datos
 db = SQLAlchemy(app)
@@ -66,6 +69,20 @@ class Producto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(200), nullable=False)
     categoria = db.Column(db.String(100), nullable=False)
+    imagen = db.Column(db.String(255), nullable=True)  
+    precio = db.Column(db.Numeric(10, 2), nullable=False) 
+
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nombre': self.nombre,
+            'descripcion': self.descripcion,
+            'precio': self.precio,
+            'categoria': self.categoria,
+            'imagen': self.imagen
+        }
+
 
 # Modelo de la tabla 'VentaProducto'
 class VentaProducto(db.Model):
@@ -117,11 +134,11 @@ def populate_chatbot():
             if not ChatbotRespuesta.query.filter_by(pregunta=dato["pregunta"]).first():
                 nuevo = ChatbotRespuesta(pregunta=dato["pregunta"], respuesta=dato["respuesta"])
                 db.session.add(nuevo)
-        db.session.commit()  # Commit para guardar los cambios
+        db.session.commit()  
 
         return "Preguntas y respuestas agregadas exitosamente."
     except Exception as e:
-        db.session.rollback()  # En caso de error, deshacemos los cambios
+        db.session.rollback() 
         return f"Error al poblar la base de datos: {str(e)}"
 
 
@@ -195,18 +212,48 @@ def iniciar_sesion():
 
     return render_template('login.html')
 
+@app.route('/productos')
+def productos():
+    productos = Producto.query.all()
+    return render_template('productos.html', productos=productos)
 
-# Ruta para la página principal después del inicio de sesión (ajusta según tu diseño)
+
+@app.route('/add_to_cart', methods=['POST'])
+def add_to_cart():
+    product = request.get_json()
+    if 'cart' not in session:
+        session['cart'] = []
+
+    session['cart'].append(product)
+    session.modified = True
+    return jsonify({'status': 'success'}), 200
+
+
+@app.route('/get_cart', methods=['GET'])
+def get_cart():
+    return jsonify(session.get('cart', []))
+
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    product_id = request.get_json().get('id')
+    if 'cart' in session:
+        session['cart'] = [item for item in session['cart'] if item['id'] != product_id]
+        session.modified = True
+        return jsonify({"status": "success"})
+    return jsonify({"status": "error", "message": "No se pudo eliminar el producto"})
+
+
+
 @app.route('/pantallainicio')
 def pantallainicio():
-    return render_template('pantallainicio.html')  # Asegúrate de que este archivo exista
+    return render_template('pantallainicio.html')  
 
 
 @app.route('/citasservicios')
 def citasservicio():
     return render_template('citasservicio.html')
 
-# Ruta paraver servicio
+
 @app.route('/serviccio')
 def servicio():
     return render_template('servicio.html')
@@ -215,6 +262,9 @@ def servicio():
 def perfil():
     return "Página del perfil"
 
+@app.route('/carrito')
+def carrito():
+    return render_template('carrito.html')
 
 if __name__ == '__main__':
     with app.app_context():

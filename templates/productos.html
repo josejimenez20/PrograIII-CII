@@ -4,19 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Productos</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/js/alertify.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: linear-gradient(to bottom, #f8f8f8, #808080); /* Degradado de negro a gris */
+      background: linear-gradient(to bottom, #f8f8f8, #808080);
+      color: #333;
     }
-    
 
     header {
       background-color: #000;
       color: #fff;
-      padding: 10px 20px;
+      padding: 20px;
       text-align: center;
     }
 
@@ -57,13 +60,19 @@
       overflow: hidden;
       padding: 10px;
       cursor: pointer;
+      transition: transform 0.3s;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: scale(1.05);
     }
 
     .product-card img {
       width: 100%;
       height: 150px;
-      object-fit: contain; /* Muestra la imagen completa */
-      background-color: #f0f0f0; /* Fondo gris claro para imágenes más pequeñas */
+      object-fit: contain;
+      background-color: #f0f0f0;
     }
 
     .product-card h3 {
@@ -77,60 +86,134 @@
       color: #666;
     }
 
-    .product-card span {
+    .product-card .price {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 16px;
       font-weight: bold;
       color: #2c3e50;
+    }
+
+    .product-card .view-details {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .product-card .view-details:hover {
+      background-color: #2980b9;
     }
 
     .modal {
       display: none;
       position: fixed;
-      top: 0;
+      z-index: 1;
       left: 0;
+      top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
+      background-color: rgba(0, 0, 0, 0.4);
+      padding-top: 60px;
+      text-align: center;
     }
 
     .modal-content {
-      background: #fff;
+      background-color: #fff;
+      margin: 5% auto;
       padding: 20px;
       border-radius: 10px;
-      text-align: center;
-      position: relative;
       width: 80%;
-      max-width: 500px;
+      max-width: 300px;
+      position: relative;
+      overflow: hidden;
     }
 
     .modal-content img {
       width: 100%;
-      border-radius: 10px;
+      height: auto;
+      object-fit: contain;
+      margin-bottom: 25px;
     }
 
-    .modal-content .close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 20px;
-      cursor: pointer;
+    .modal-content h2 {
+      font-size: 22px;
+      margin: 10px 0;
     }
 
-    #buy-button {
+    .modal-content p {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .modal-content .add-to-cart {
       background-color: #28a745;
       color: white;
       border: none;
+      padding: 10px 20px;
       border-radius: 5px;
       cursor: pointer;
       font-size: 16px;
     }
 
-    #buy-button:hover {
+    .modal-content .add-to-cart:hover {
       background-color: #218838;
     }
 
+    .modal-content .price {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 30px;
+      color: #aaa;
+      cursor: pointer;
+    }
+
+    .cart-container {
+      padding: 20px;
+      background-color: #f8f8f8;
+      margin-top: 20px;
+    }
+
+    .cart-item {
+      background-color: #fff;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-item img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+
+    .cart-item h4 {
+      display: inline-block;
+      margin: 0;
+    }
+
+    .cart-item .price {
+      color: #28a745;
+      font-weight: bold;
+      float: right;
+    }
   </style>
 </head>
 <body>
@@ -150,59 +233,113 @@
     <input type="text" id="search" placeholder="Buscar por nombre..." oninput="applyFilters()">
   </div>
 
-  <div class="product-grid" id="product-grid"></div>
+  <div class="product-grid" id="product-grid">
+    <!-- Productos serán insertados aquí dinámicamente -->
+  </div>
+
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close-btn">&times;</span>
+      <div class="price" id="modalPrice"></div>
+      <img id="modalImage" src="" alt="">
+      <h2 id="modalTitle"></h2>
+      <p id="modalDescription"></p>
+      <button id="addToCartBtn" class="add-to-cart" onclick="addToCart()">
+        <i class="fas fa-cart-plus"></i> Añadir al carrito
+      </button>
+    </div>
+  </div>
 
   <script>
     const products = [
-    { id: 1, name: 'Shampoo para Crecimiento', category: 'categoria1', description: 'Acelera el crecimiento de tu cabello con nutrientes esenciales.', price: '$20', image: 'static/img/shampocrecimiento.jpg' },
-    { id: 2, name: 'Shampoo para Cabello Liso', category: 'categoria1', description: 'Deja tu cabello suave y perfectamente liso.', price: '$25', image: 'static/img/shampoliso.jpg' },
-    { id: 3, name: 'Shampoo para Rizos', category: 'categoria1', description: 'Cuida tus rizos.', price: '$20', image: 'static/img/shamporizos.jpg' },
-    { id: 4, name: 'Shampoo Hidratante', category: 'categoria1', description: 'Cabello con nutrientes esenciales.', price: '$20', image: 'static/img/shapohidra.jpg' },
-    { id: 5, name: 'Acondicionador', category: 'categoria1', description: 'Acelera el crecimiento de tu cabello con nutrientes esenciales.', price: '$20', image: 'static/img/acondicionador.jpg' },
-    { id: 6, name: 'Acondicionador Extra Acido', category: 'categoria1', description: 'Acelera el crecimiento de tu cabello con nutrientes esenciales.', price: '$20', image: 'static/img/acondicionador1.jpg' },
-    { id: 7, name: 'Acondicionador Neutro', category: 'categoria1', description: 'Acelera el crecimiento de tu cabello con nutrientes esenciales.', price: '$20', image: 'static/img/acondicionador2.jpg' },
-    { id: 8, name: 'Serums Facial', category: 'categoria2', description: 'Base líquida de larga duración para un acabado impecable.', price: '$30', image: 'static/img/serums.jpg' },
-    { id: 9, name: 'Serums para Pestañas', category: 'categoria2', description: 'Formulado para estimular el crecimiento de las pestañas y proporcionar una profunda nutrición.', price: '$30', image: 'static/img/serumpestaña.jpg' },
-    { id: 10, name: 'Exfoliante Corporal', category: 'categoria2', description: 'Con aroma.', price: '$30', image: 'static/img/esfoliante.jpg' },
-    { id: 11, name: 'Exfoliante Sandia', category: 'categoria2', description: 'Con aroma.', price: '$30', image: 'static/img/esfoliante2.jpg' },
-    { id: 12, name: 'Exfoliante Vainilla', category: 'categoria2', description: 'Con aroma.', price: '$30', image: 'static/img/esfoliante3.jpg' },
-    { id: 13, name: 'Gel Acrílico', category: 'categoria4', description: 'Acabado perfecto en tus uñas.', price: '$15', image: 'static/img/gel.jpg' },
-    { id: 14, name: 'Brochas de Maquillaje', category: 'categoria3', description: 'Kit completo para todas tus necesidades de maquillaje.', price: '$40', image: 'static/img/brochas.jpg' },
-    { id: 15, name: 'Mini Paleta Rosee', category: 'categoria3', description: 'Cute.', price: '$40', image: 'static/img/minipaleta.jpg' },
-    { id: 16, name: 'GLOSS', category: 'categoria3', description: 'Cute.', price: '$40', image: 'static/img/gloss.jpg' },
-    { id: 17, name: 'Set para Aplicar Tintes', category: 'categoria5', description: 'Cute.', price: '$40', image: 'static/img/settinte.jpg' },
-    { id: 18, name: 'Mini Brush Pink', category: 'categoria5', description: 'Cute.', price: '$40', image: 'static/img/minibrus.jpg' },
-    { id: 19, name: 'Aceite Nutritivo para Uñas y Cutículas', category: 'categoria4', description: 'Cute.', price: '$40', image: 'static/img/aceitecuticula.jpg' }
-  ];
+      {% for producto in productos %}
+        {
+          id: {{ producto['id'] }},
+          nombre: "{{ producto['nombre'] }}",
+          descripcion: "{{ producto['descripcion'] }}",
+          precio: "{{ producto['precio'] }}",
+          imagen: "{{ producto['imagen'] }}",
+          categoria: "{{ producto['categoria'] }}"
+        }
+        {% if not loop.last %}, {% endif %}
+      {% endfor %}
+    ];
 
-    const renderProducts = (filteredProducts) => {
-      const grid = document.getElementById('product-grid');
-      grid.innerHTML = '';
+    function renderProducts(products) {
+      const productGrid = document.getElementById('product-grid');
+      productGrid.innerHTML = ''; // Limpiar el grid
 
-      filteredProducts.forEach(product => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-          <img src="${product.image}" alt="${product.name}">
-          <h3>${product.name}</h3>
-          <p>${product.description}</p>
-          <span>${product.price}</span>
+      products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.classList.add('product-card');
+        productCard.innerHTML = `
+          <img src="${product.imagen}" alt="${product.nombre}">
+          <h3>${product.nombre}</h3>
+          <p>${product.descripcion}</p>
+          <div class="price">$${product.precio}</div>
+          <button class="view-details" onclick="openModal(${product.id})">Ver detalles</button>
         `;
-        grid.appendChild(card);
+        productGrid.appendChild(productCard);
       });
-    };
+    }
+
+    function openModal(productId) {
+      const product = products.find(p => p.id === productId);
+      document.getElementById('modalTitle').textContent = product.nombre;
+      document.getElementById('modalDescription').textContent = product.descripcion;
+      document.getElementById('modalPrice').textContent = `$${product.precio}`;
+      document.getElementById('modalImage').src = product.imagen;
+      document.getElementById('productModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('productModal').style.display = 'none';
+    }
+
+    document.getElementById('closeModal').onclick = closeModal;
+
+    function addToCart() {
+  const productId = products.find(p => p.nombre === document.getElementById('modalTitle').textContent).id;
+  const product = products.find(p => p.id === productId);
+
+  fetch('/add_to_cart', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      id: product.id,
+      nombre: product.nombre,
+      descripcion: product.descripcion,
+      precio: product.precio,
+      imagen: product.imagen
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    alertify.success(`${product.nombre} añadido al carrito`); 
+    closeModal();
+  })
+  .catch(error => {
+    alertify.error('Error al añadir al carrito');
+  });
+}
 
 
-    const applyFilters = () => {
+    function applyFilters() {
+      const searchTerm = document.getElementById('search').value.toLowerCase();
       const category = document.getElementById('category').value;
-      const search = document.getElementById('search').value.toLowerCase();
+
       const filteredProducts = products.filter(product => {
-        const matchesCategory = category === 'all' || product.category === category;
-        const matchesSearch = product.name.toLowerCase().includes(search);
-        return matchesCategory && matchesSearch;
+        const matchesSearch = product.nombre.toLowerCase().includes(searchTerm);
+        const matchesCategory = category === 'all' || product.categoria === category;
+        return matchesSearch && matchesCategory;
       });
+
       renderProducts(filteredProducts);
-    };
+    }
+
+    renderProducts(products); // Renderizar todos los productos al cargar la página
   </script>
 </body>
 </html>

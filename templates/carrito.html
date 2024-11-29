@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/js/alertify.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #000;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .cart-container {
+      padding: 20px;
+    }
+
+    .cart-item {
+      background-color: white;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-item img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+    }
+
+    .cart-item h4 {
+      margin: 0;
+    }
+
+    .cart-item .price {
+      font-weight: bold;
+      color: #28a745;
+    }
+
+    .remove-btn {
+      cursor: pointer;
+      font-size: 20px;
+      color: red;
+      background: none;
+      border: none;
+      margin-left: 10px;
+    }
+
+    .total {
+      text-align: right;
+      font-size: 18px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .checkout-btn {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .checkout-btn:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Carrito de Compras</h1>
+  </header>
+
+  <div class="cart-container" id="cart-container">
+  </div>
+
+  <div class="total" id="total-container">
+  </div>
+
+  <button class="checkout-btn">Proceder al pago</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('/get_cart')
+        .then(response => response.json())
+        .then(cart => {
+          const cartContainer = document.getElementById('cart-container');
+          const totalContainer = document.getElementById('total-container');
+          cartContainer.innerHTML = ''; 
+
+          let total = 0;
+          cart.forEach(item => {
+            total += parseFloat(item.precio);
+
+            const cartItem = document.createElement('div');
+            cartItem.classList.add('cart-item');
+            cartItem.innerHTML = `
+              <img src="${item.imagen}" alt="${item.nombre}">
+              <h4>${item.nombre}</h4>
+              <div class="price">$${item.precio}</div>
+              <button class="remove-btn" onclick="removeFromCart(${item.id})">&times;</button>
+            `;
+            cartContainer.appendChild(cartItem);
+          });
+
+          totalContainer.textContent = `Total: $${total.toFixed(2)}`;
+        })
+        .catch(error => {
+          alertify.error('Error al cargar el carrito');
+        });
+    });
+
+    function removeFromCart(product_id) {
+    fetch('/remove_from_cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: product_id }) // Se asegura de que "product_id" está bien definido aquí
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alertify.success("Producto eliminado del carrito");
+            document.getElementById('cart-item-' + product_id).remove(); // Verifica que el ID del producto es correcto aquí
+            updateCartTotal();
+        } else {
+            alertify.error("Error al eliminar el producto");
+        }
+    })
+    .catch(error => {
+        alertify.error("Error al eliminar el producto");
+    });
+}
+
+
+    function updateCartTotal() {
+      fetch('/get_cart')
+        .then(response => response.json())
+        .then(cart => {
+          const totalContainer = document.getElementById('total-container');
+          let total = 0;
+          cart.forEach(item => {
+            total += parseFloat(item.precio);
+          });
+          totalContainer.textContent = `Total: $${total.toFixed(2)}`;
+        });
+    }
+  </script>
+</body>
+</html>
+
+
+
