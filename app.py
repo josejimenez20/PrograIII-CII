@@ -12,7 +12,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializar la base de datos
 db = SQLAlchemy(app)
-
 # Crear el modelo de la tabla 'usuarios'
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -202,12 +201,7 @@ def iniciar_sesion():
 def pantallainicio():
     return render_template('pantallainicio.html')  # Asegúrate de que este archivo exista
 
-# Ruta para ver productos
-@app.route('/productos')
-def productos():
-    return render_template('productos.html')
 
-# Ruta paraver citasservicio
 @app.route('/citasservicios')
 def citasservicio():
     return render_template('citasservicio.html')
@@ -217,69 +211,13 @@ def citasservicio():
 def servicio():
     return render_template('servicio.html')
 
-# Ruta para agregar un producto
-@app.route('/add_product', methods=['POST'])
-def add_product():
-    data = request.get_json()   
-    nombre = data['name']
-    categoria = data['category']
-
-    nuevo_producto = Producto(nombre=nombre, categoria=categoria)
-
-    try:
-        db.session.add(nuevo_producto)
-        db.session.commit()
-        return {'message': 'Producto agregado exitosamente'}, 201
-    except Exception as e:
-        db.session.rollback()
-        return {'message': f'Error al agregar el producto: {str(e)}'}, 500
-
-
-# Ruta para editar un producto
-@app.route('/edit_product/<int:id>', methods=['PUT'])
-def edit_product(id):
-    data = request.get_json()
-    nombre = data['name']
-    categoria = data['category']
-
-    producto = Producto.query.get(id)
-    if producto:
-        producto.nombre = nombre
-        producto.categoria = categoria
-        db.session.commit()
-        return {'message': 'Producto actualizado exitosamente'}, 200
-    return {'message': 'Producto no encontrado'}, 404
-
-# Ruta para eliminar un producto
-@app.route('/delete_product/<int:id>', methods=['DELETE'])
-def delete_product(id):
-    producto = Producto.query.get(id)
-    if producto:
-        db.session.delete(producto)
-        db.session.commit()
-        return {'message': 'Producto eliminado exitosamente'}, 200
-    return {'message': 'Producto no encontrado'}, 404
-
-# Ruta para obtener todos los productos
-@app.route('/get_products', methods=['GET'])
-def get_products():
-    productos = Producto.query.all()  # Consulta todos los productos
-    product_list = [{"id": p.id, "name": p.nombre, "category": p.categoria} for p in productos]
-    return {"products": product_list}  # Devuelve la lista en formato JSON
-
-@app.route('/carrito')
-def carrito():
-    return "Página del carrito"
-
 @app.route('/perfil')
 def perfil():
     return "Página del perfil"
 
 
-# Iniciar la app
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Crear las tablas en la base de datos si aún no existen
         app.run(debug=True, port=5000)
 
         
